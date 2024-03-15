@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- favicon -->
+    <link rel="icon" href="..\static\assets\tools.png" type="image/x-icon"
+        title="Contruction icons created by Prosymbols Premium - Flaticon from www.flaticon.com" />
+    <title>Ingresar - Depósito La Aurora</title>
+    <link rel="stylesheet" href="../static/css/generalStyles.css">
+    <link rel="stylesheet" href="../static/css/signup_login.css">
+</head>
+
+<body class="login_body">
+    <section class="access">
+        <form method="POST">
+            <input class="accessInput" type="email" name="email" placeholder="Correo electrónico" required>
+            <input class="accessInput" type="password" name="password" placeholder="Contraseña" required>
+            <input class="accessInput submit_btn" type="submit" value="Iniciar sesión">
+        </form>
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <p class="access_text">No tienes una cuenta? <a href="/signup">regístrate</a></p>
+    </section>
+</body>
+
+</html>

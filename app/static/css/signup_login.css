@@ -1,0 +1,80 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+body {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: "Varela Round", sans-serif;
+}
+.signup_body {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url("https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+
+}
+
+.login_body {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url("https://images.unsplash.com/photo-1631856954655-966f97d809de?q=80&w=2046&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+
+}
+
+.access {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.access form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.accessInput {
+    background: rgba(155, 155, 155, 0.3);
+    color: #FAFAEB;
+    width: 300px;
+    padding: 15px;
+    margin: 15px;
+    border: 2px solid #BF815E;
+    border-radius: 25px;
+    font-size: 1.5rem;
+}
+
+.accessInput::placeholder {
+    color: #aaa;
+}
+
+.submit_btn {
+    background: rgba(242, 151, 39, 0.2);
+    border: 2px solid #F29727;
+    box-shadow: 0 0 0.3rem #F29727;
+}
+
+.submit_btn:hover {
+    background: #F29727;
+}
+
+.access_text {
+    margin-top: 15px;
+}
+
+.access_text a {
+    color: #F29727;
+}
+
+.access_text a:hover {
+    text-decoration: underline;
+}
