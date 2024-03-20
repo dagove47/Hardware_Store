@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Productos</title>
+    <link rel="stylesheet" href="../static/css/productos.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>CRUD de Productos</h1>
+        <form action="{{ url_for('crear') }}" method="POST">
+            <div class="form-group">
+                <label>ID:</label>
+                <input type="number" class="form-control" name="id">
+            </div>
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input type="text" class="form-control" name="nombre">
+            </div>
+            <div class="form-group">
+                <label>Descripción:</label>
+                <input type="text" class="form-control" name="descripcion">
+            </div>
+            <div class="form-group">
+                <label>Proveedor:</label>
+                <input type="text" class="form-control" name="proveedor">
+            </div>
+            <div class="form-group">
+                <label>Precio:</label>
+                <input type="number" class="form-control" name="precio">
+            </div>
+            <div class="form-group">
+                <label>Descuento:</label>
+                <input type="number" class="form-control" name="descuento">
+            </div>
+            <div class="form-group">
+                <label>Cantidad en Stock:</label>
+                <input type="number" class="form-control" name="stock">
+            </div>
+            <button type="submit" class="btn btn-primary">Crear Producto</button>
+        </form>
+        <hr>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Proveedor</th>
+                    <th>Precio</th>
+                    <th>Descuento</th>
+                    <th>Cantidad en Stock</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td>{{ producto[0] }}</td>
+                    <td>{{ producto[1] }}</td>
+                    <td>{{ producto[2] }}</td>
+                    <td>{{ producto[3] }}</td>
+                    <td>{{ producto[4] }}</td>
+                    <td>{{ producto[5] }}</td>
+                    <td>{{ producto[6] }}</td>
+                    <td>
+                        <a href="{{ url_for('eliminar', id=producto[0]) }}" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
