@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../static/css/admin/addcategory.css">
+    <script src="../../static/js/admin/addcategory.js" defer></script>
+</head>
+<body>
+
+    <div class="container-add-category">
+        <form class="form-register" action="{{ url_for('Acategorias') }}" method="POST" autocomplete="off" enctype="multipart/form-data">
+           
+            <div class="left">
+            <div class="titulo">
+                <h2>Agregar nueva categoria</h2>
+                <hr>
+            </div>
+            <input class="cate_input" type="text" name="nombreCategoria" placeholder="Nombre" required>
+            <button  type="submit" class="form__submit">Agregar</button>
+        </div>
+
+
+    <div class="right">
+        <div class="file-dnd">
+        <label for="upload-image">Upload your file</label>
+        <input type="file" name= "archivo" id="upload-image" accept="image/*"/>
+        <div class="before-upload">
+        <div class="fa fa-image">
+            <h4>Draga & Drop image file or browse</h4>
+            <p>Supports: JPEG,PNG,GIF,TIFF</p>
+        </div>
+    </div>
+</form>
+    <div class="after-upload">
+        <div class="clear-btn">&times;</div>
+        <img src=""/>
+    </div>
+    </div>
+</div>
+        </div>
+    
+    </div>
+
+
+</body>
+</html>
