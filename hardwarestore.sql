@@ -165,3 +165,47 @@ BEGIN
     COMMIT;
 END eliminar_usuario;
 /
+---TABLAS---
+
+-- Crear la tabla de Categorias
+CREATE TABLE Categorias (
+    id_categoria NUMBER PRIMARY KEY,
+    Nombre VARCHAR2(50),
+    archivo blob
+);
+
+-- Crear la tabla de SubCategorias
+CREATE TABLE SubCategorias (
+    id_subcategoria NUMBER PRIMARY KEY,
+    Nombre VARCHAR2(50),
+    id_categoria Number,
+    CONSTRAINT fk_categoria FOREIGN KEY (id_categoria) REFERENCES Categorias(id_categoria)
+);
+
+
+
+-------------------------Categorias---------------------------------
+
+--SP Categorias--
+CREATE OR REPLACE PROCEDURE CrearCategoria(
+    c_nombre varchar2,
+    c_archivo blob,
+)
+AS
+BEGIN
+    INSERT INTO categorias (nombre, archivo)
+    VALUES (c_nombre,c_archivo);
+    COMMIT;
+END;
+
+
+--Triggers y secuencias--
+
+CREATE SEQUENCE seq_categorias START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER trg_before_insert_categorias
+BEFORE INSERT ON categorias
+FOR EACH ROW
+BEGIN
+    SELECT seq_categorias.NEXTVAL INTO :NEW.id FROM DUAL;
+END;
