@@ -92,3 +92,76 @@ CREATE TABLE Usuarios (
     fecNacimiento DATE,
     Rol CHAR(1) CHECK (Rol IN ('Admin', 'Usuario'))
 );
+
+-- Crear un nuevo usuario
+CREATE OR REPLACE PROCEDURE crear_usuario(
+    u_id_usuario IN VARCHAR2,
+    u_contrasena IN VARCHAR2,
+    u_nombre IN VARCHAR2,
+    u_direccion IN VARCHAR2,
+    u_provincia IN VARCHAR2,
+    u_telefono IN NUMBER,
+    u_fec_nacimiento IN DATE,
+    u_rol IN CHAR
+)
+AS
+BEGIN
+    INSERT INTO Usuarios (ID_Usuario, Contrasena, Nombre, Direccion, provincia, Telefono, fecNacimiento, Rol)
+    VALUES (u_id_usuario, u_contrasena, u_nombre, u_direccion, u_provincia, u_telefono, u_fec_nacimiento, u_rol);
+    COMMIT;
+END crear_usuario;
+/
+
+-- Leer un usuario por su ID
+CREATE OR REPLACE FUNCTION leer_usuario(
+    u_id_usuario IN VARCHAR2
+)
+RETURN Usuarios%ROWTYPE
+AS
+    usuario_row Usuarios%ROWTYPE;
+BEGIN
+    SELECT * INTO usuario_row
+    FROM Usuarios
+    WHERE ID_Usuario = u_id_usuario;
+
+    RETURN usuario_row;
+END leer_usuario;
+/
+
+-- Actualizar un usuario
+CREATE OR REPLACE PROCEDURE actualizar_usuario(
+    u_id_usuario IN VARCHAR2,
+    u_contrasena IN VARCHAR2,
+    u_nombre IN VARCHAR2,
+    u_direccion IN VARCHAR2,
+    u_provincia IN VARCHAR2,
+    u_telefono IN NUMBER,
+    u_fec_nacimiento IN DATE,
+    u_rol IN CHAR
+)
+AS
+BEGIN
+    UPDATE Usuarios
+    SET Contrasena = u_contrasena,
+        Nombre = u_nombre,
+        Direccion = u_direccion,
+        provincia = u_provincia,
+        Telefono = u_telefono,
+        fecNacimiento = u_fec_nacimiento,
+        Rol = u_rol
+    WHERE ID_Usuario = u_id_usuario;
+    COMMIT;
+END actualizar_usuario;
+/
+
+-- Eliminar un usuario
+CREATE OR REPLACE PROCEDURE eliminar_usuario(
+    u_id_usuario IN VARCHAR2
+)
+AS
+BEGIN
+    DELETE FROM Usuarios
+    WHERE ID_Usuario = u_id_usuario;
+    COMMIT;
+END eliminar_usuario;
+/
