@@ -77,3 +77,18 @@ BEGIN
     COMMIT;
 END eliminar_producto;
 /
+
+------------
+
+--Tabla de usuarios
+
+CREATE TABLE Usuarios (
+    ID_Usuario VARCHAR2(100) PRIMARY KEY,
+    Contrasena VARCHAR2(50),
+    Nombre VARCHAR2(100),
+    Direccion VARCHAR2(200),
+    provincia VARCHAR2(50),
+    Telefono NUMBER,
+    fecNacimiento DATE,
+    Rol CHAR(1) CHECK (Rol IN ('Admin', 'Usuario'))
+);

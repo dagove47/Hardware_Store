@@ -1,0 +1,23 @@
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.column {
+    width: calc(50% - 10px); /* El ancho de cada columna*/
+    margin-bottom: 20px; /* Espacio entre filas */
+}
+
+.btn-container {
+    text-align: center;
+    margin-top: 20px; /* Espacio entre el formulario y el botón */
+}
+
+select.accessInput {
+    width: calc(100% - 20px); 
+    height: 62px;
+    padding: 7px; 
+    margin-bottom: 20px; 
+}
