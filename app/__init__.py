@@ -44,9 +44,13 @@ def index():
 def home():
     return render_template('home.html')
 
-@app.route('/homec')
-def homec():
-    return render_template('home copy.html')
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
 
 @app.route('/productos')
 def productos():
