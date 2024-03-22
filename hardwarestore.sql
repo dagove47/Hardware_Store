@@ -186,7 +186,7 @@ CREATE TABLE SubCategorias (
 
 -------------------------Categorias---------------------------------
 
---SP Categorias--
+--SP Categorias | CREAR --
 CREATE OR REPLACE PROCEDURE CrearCategoria(
     c_nombre varchar2,
     c_archivo blob,
@@ -198,6 +198,24 @@ BEGIN
     COMMIT;
 END;
 
+--SP Categorias | OBTENER --
+
+CREATE OR REPLACE PROCEDURE ObtenerCategorias (
+    categorias_cursor OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN categorias_cursor FOR
+    SELECT id_categoria,nombre, archivo
+    FROM categorias;
+END ObtenerCategorias;
+
+
+--SP Categorias | ELIMINAR --
+CREATE OR REPLACE PROCEDURE EliminarCategoria(id_cate IN NUMBER) AS
+BEGIN
+    DELETE FROM categorias WHERE id_categoria = id_cate;
+END EliminarCategoria;
 
 --Triggers y secuencias--
 
