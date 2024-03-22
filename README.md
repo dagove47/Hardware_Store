@@ -78,6 +78,37 @@ python setup.py
 
 This will start the application, and you should be able to access it in your web browser.
 
+## Troubleshooting
+
+### Error: cx_Oracle Module Cannot Find Oracle Client Libraries
+
+#### Error Breakdown:
+
+The cx_Oracle module, used for interacting with Oracle databases in Python, cannot find the necessary Oracle Client libraries on your system. This is crucial for establishing connections to the database.
+
+#### Solution Steps:
+
+1. **Install Oracle Instant Client:**
+
+    - Download the 64-bit Oracle Instant Client Basic or Basic Light package for your operating system from the [Oracle website](https://www.oracle.com/database/technologies/instant-client/downloads.html).
+    - Extract the downloaded zip file to a directory you'll remember (e.g., `C:\oracle\instantclient_21_13`).
+
+2. **Set Environment Variables:**
+
+    - **Windows:**
+        - Search for "Edit the system environment variables" in the Start menu.
+        - Under "Advanced" and "Environment Variables", find the "Path" variable and click "Edit."
+        - Add the Instant Client directory path (e.g., `C:\oracle\instantclient_21_13`) to the end of the existing value, separated by a semicolon.
+    
+    - **macOS/Linux:**
+        - Use a terminal to edit your shell configuration file (e.g., `.bashrc` or `.zshrc`) and add the following line (replace the path with your actual directory):
+
+        ```bash
+        export PATH=$PATH:/path/to/instantclient_21_13
+        ```
+
+These steps should resolve the issue with the cx_Oracle module unable to find the necessary Oracle Client libraries.
+
 ## Author
 
 - David Gómez Venegas
