@@ -165,6 +165,50 @@ BEGIN
     COMMIT;
 END eliminar_usuario;
 /
+
+create or replace PROCEDURE cambiar_rol_usuario(
+    u_id_usuario IN VARCHAR2,
+    u_nuevo_rol IN CHAR
+)
+AS
+BEGIN
+    UPDATE Usuarios
+    SET Rol = u_nuevo_rol
+    WHERE ID_Usuario = u_id_usuario;
+    COMMIT;
+END cambiar_rol_usuario;
+
+create or replace NONEDITIONABLE PROCEDURE obtener_usuarios
+AS
+BEGIN
+    FOR usuario_row IN (SELECT * FROM Usuarios) LOOP
+        DBMS_OUTPUT.PUT_LINE('ID Usuario: ' || usuario_row.ID_Usuario || ', Nombre: ' || usuario_row.Nombre);
+    END LOOP;
+END obtener_usuarios;
+
+--Ver productos agotados
+CREATE OR REPLACE VIEW productos_agotados AS
+SELECT *
+FROM productos
+WHERE CANTIDAD_STOCK = 0;
+
+--Usuarios con el rol de administrador
+CREATE OR REPLACE VIEW usuarios_administrativos AS
+SELECT *
+FROM Usuarios
+WHERE Rol = 'Admin';
+
+--Productos con poco stock (menos de 5)
+CREATE OR REPLACE VIEW productos_stock_bajo AS
+SELECT *
+FROM productos
+WHERE CANTIDAD_STOCK < 5;
+
+--Informacion de usuarios
+CREATE OR REPLACE VIEW informacion_usuarios AS
+SELECT ID_Usuario, Nombre, Direccion, Telefono, fecNacimiento, Rol
+FROM Usuarios;
+
 ---TABLAS---
 
 -- Crear la tabla de Categorias
@@ -189,7 +233,7 @@ CREATE TABLE SubCategorias (
 --SP Categorias | CREAR --
 CREATE OR REPLACE PROCEDURE CrearCategoria(
     c_nombre varchar2,
-    c_archivo blob,
+    c_archivo blob
 )
 AS
 BEGIN
@@ -225,5 +269,5 @@ CREATE OR REPLACE TRIGGER trg_before_insert_categorias
 BEFORE INSERT ON categorias
 FOR EACH ROW
 BEGIN
-    SELECT seq_categorias.NEXTVAL INTO :NEW.id FROM DUAL;
+    SELECT seq_categorias.NEXTVAL INTO :NEW.id_categoria FROM DUAL;
 END;
