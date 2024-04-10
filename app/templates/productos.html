@@ -3,45 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD Productos</title>
+    <title>CRUD de Productos</title>
     <link rel="stylesheet" href="../static/css/productos.css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
-        <h1>CRUD de Productos</h1>
-        <form action="" method="POST">
-            <div class="form-group">
-                <label>ID:</label>
-                <input type="number" class="form-control" name="id">
-            </div>
-            <div class="form-group">
-                <label>Nombre:</label>
-                <input type="text" class="form-control" name="nombre">
-            </div>
-            <div class="form-group">
-                <label>Descripción:</label>
-                <input type="text" class="form-control" name="descripcion">
-            </div>
-            <div class="form-group">
-                <label>Proveedor:</label>
-                <input type="text" class="form-control" name="proveedor">
-            </div>
-            <div class="form-group">
-                <label>Precio:</label>
-                <input type="number" class="form-control" name="precio">
-            </div>
-            <div class="form-group">
-                <label>Descuento:</label>
-                <input type="number" class="form-control" name="descuento">
-            </div>
-            <div class="form-group">
-                <label>Cantidad en Stock:</label>
-                <input type="number" class="form-control" name="stock">
-            </div>
+        <h1 class="mb-4">CRUD de Productos</h1>
+        <form action="/crear_producto" method="POST" class="mb-4">
+            <input type="number" name="id_producto" placeholder="ID Producto" class="form-control mb-2" required>
+            <input type="text" name="nombre" placeholder="Nombre" class="form-control mb-2" required>
+            <input type="text" name="descripcion" placeholder="Descripción" class="form-control mb-2" required>
+            <input type="text" name="proveedor" placeholder="Proveedor" class="form-control mb-2" required>
+            <input type="number" name="precio" placeholder="Precio" class="form-control mb-2" required>
+            <input type="number" name="descuento" placeholder="Descuento" class="form-control mb-2" required>
+            <input type="number" name="cantidad_stock" placeholder="Cantidad en stock" class="form-control mb-2" required>
             <button type="submit" class="btn btn-primary">Crear Producto</button>
         </form>
-        <hr>
+        
         <table class="table">
             <thead>
                 <tr>
@@ -56,20 +35,18 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- {% for producto in productos %}
+                {% for producto in productos %}
                 <tr>
                     <td>{{ producto[0] }}</td>
                     <td>{{ producto[1] }}</td>
                     <td>{{ producto[2] }}</td>
-                    <td>{{ producto[3] }}</td>
-                    <td>{{ producto[4] }}</td>
-                    <td>{{ producto[5] }}</td>
-                    <td>{{ producto[6] }}</td>
                     <td>
-                        <a href="{{ url_for('eliminar', id=producto[0]) }}" class="btn btn-danger">Eliminar</a>
+                        <form action="/eliminar_producto/{{ producto[0] }}" method="POST">
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
-                {% endfor %} -->
+                {% endfor %}
             </tbody>
         </table>
     </div>
