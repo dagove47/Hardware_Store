@@ -90,6 +90,31 @@ def eliminarCategoria(id_categoria):
    
     return redirect(url_for('obtener_categorias'))
 
+@app.route('/admin/categorias/editar/<int:id_categoria>', methods=['GET', 'POST'])
+def editarCategoria(id_categoria):
+    conn, cursor = get_db_connection()
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        nombreCategoria = request.form['nombreCategoria']
+        archivo = request.files['archivo'].read()
+
+        # Llamar al procedimiento PL/SQL para editar la categoría
+        cursor.callproc('editar_categoria', [id_categoria, nombreCategoria, archivo])
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+        return redirect(url_for('obtener_categorias'))
+    
+    # Obtener la información de la categoría para mostrarla en el formulario de edición
+    cursor.execute("SELECT nombre, archivo FROM categorias WHERE id_categoria = :id", {"id": id_categoria})
+    categoria = cursor.fetchone()
+    categoria_con_base64 = (id_categoria, categoria[0], base64.b64encode(categoria[1].read()).decode('utf-8'))
+    
+    cursor.close()
+    conn.close()
+    return render_template('/admin/EditCategory.html', categoria=categoria_con_base64)
+
 
 #Formulario Categoria
 @app.route('/admin/AddCategoria' ,methods = [ 'GET','POST'])
@@ -104,7 +129,128 @@ def Acategorias():
         # Llamar al procedimiento PL/SQL para crear un proveedor
         cursor.callproc('CrearCategoria', [nombreCategoria,archivo])
         conn.commit()
+
+        cursor.close()
+        conn.close()
+        return redirect(url_for('obtener_categorias'))
         
     return render_template('/Admin/AddCategory.html')
 
-#return redirect(url_for('obtener_categorias'))
+
+# ------   SUBCATEGORIAS   ------
+
+@app.route('/admin/AddSubCategoria', methods=['GET', 'POST'])
+def SubCategory():
+    # Conexión a la base de datos y obtener categorías
+    conn, cursor = get_db_connection()
+    categorias_cursor = cursor.var(cx_Oracle.CURSOR)
+    cursor.callproc('ObtenerCategorias', [categorias_cursor])
+
+    # Obtener los resultados del cursor
+    categorias = categorias_cursor.getvalue()
+    categorias_con_formato = [{'id': categoria[0], 'nombre': categoria[1]} for categoria in categorias]
+
+    if request.method == 'POST':
+        
+        # Obtener datos del formulario
+        category_id = request.form['categoria']
+        nombre_sub_categoria = request.form['nombreSubCategoria']
+        
+        # Llamar al procedimiento PL/SQL para agregar la subcategoría
+        cursor.callproc('AgregarSubCategoria', [nombre_sub_categoria, category_id])
+        conn.commit()
+
+    cursor.close()
+    conn.close()
+    return redirect(url_for('mostrar_subcategorias'))
+#return render_template('/admin/AddSubCategory.html', categorias=categorias_con_formato)
+
+@app.route('/admin/subcategorias')
+def mostrar_subcategorias():
+    # Conexión a la base de datos
+    conn, cursor = get_db_connection()
+    
+    # Llamar al procedimiento almacenado para obtener subcategorías
+    subcategorias_cursor = cursor.var(cx_Oracle.CURSOR)
+    cursor.callproc('ObtenerSubcategorias', [subcategorias_cursor])
+
+    # Obtener resultados del cursor de salida
+    subcategorias = subcategorias_cursor.getvalue()
+
+    subcategoria_array = []
+    for subcategoria in subcategorias:
+        id_subcategoria = subcategoria[0] # ID de subcategoría
+        nombre_subcategoria = subcategoria[1] # Nombre de subcategoría
+        id_categoria = subcategoria[2] # ID de categoría
+
+        # Llamar al procedimiento almacenado para obtener los datos de la categoría
+        categorias_cursor = cursor.var(cx_Oracle.CURSOR)
+        cursor.callproc('ObtenerCategorias', [categorias_cursor])
+        categorias = categorias_cursor.getvalue()
+
+        # Buscar la categoría por su ID
+        nombre_categoria = None
+        for categoria in categorias:
+            if categoria[0] == id_categoria:
+                nombre_categoria = categoria[1]
+                break
+
+        subcategoria_array.append((id_subcategoria, nombre_subcategoria, nombre_categoria))
+
+    # Pasar subcategorías a la plantilla HTML
+    return render_template('/admin/subcategorias.html', subcategorias=subcategoria_array)
+
+
+@app.route('/admin/subcategorias/eliminar/<int:id_subcategoria>')
+def eliminarSubCategoria(id_subcategoria):
+    conn, cursor = get_db_connection()
+    with conn.cursor() as cursor:
+        cursor.callproc('EliminarSubCategoria', (id_subcategoria,))
+        conn.commit()
+
+   
+    return redirect(url_for('mostrar_subcategorias'))
+
+
+@app.route('/admin/subcategorias/editar/<int:id_subcategoria>', methods=['GET', 'POST'])
+def editarSubCategoria(id_subcategoria):
+    conn, cursor = get_db_connection()
+
+    #obtener la lista de categorias
+    categorias_cursor = cursor.var(cx_Oracle.CURSOR)
+    # Llamar al procedimiento almacenado con el cursor como argumento de salida
+    cursor.callproc('ObtenerCategorias', [categorias_cursor])
+
+    # Obtener los resultados del cursor
+    categorias = categorias_cursor.getvalue()
+    
+    # Convertir el objeto LOB BLOB a base64 y decodificarlo a UTF-8
+    categoriasF = []
+    for categoria in categorias:
+        id = categoria[0] #  el id está en la posición 0
+        nombre = categoria[1]  #  el nombre está en la posición 1
+        categoriasF.append((id,nombre))
+
+
+
+    
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        nombreSubCategoria = request.form['nombreSubCategoria']
+        id_categoria = request.form['categoria']
+
+        # Llamar al procedimiento PL/SQL para editar la subcategoría
+        cursor.callproc('editar_subcategoria', [id_subcategoria, nombreSubCategoria, id_categoria])
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+        return redirect(url_for('mostrar_subcategorias'))
+    
+    # Obtener la información de la subcategoría para mostrarla en el formulario de edición
+    cursor.execute("SELECT id_subcategoria, nombre, id_categoria FROM subcategorias WHERE id_subcategoria = :id", {"id": id_subcategoria})
+    subcategoria = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+    return render_template('/admin/EditSubCategory.html', categorias= categoriasF, subcategoria=subcategoria)

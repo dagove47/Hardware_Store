@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Categoría</title>
+    <link rel="stylesheet" href="../../../static/css/admin/addcategory.css">
+    <script src="../../../static/js/admin/addcategory.js" defer></script> 
+</head>
+<body>
+    <div class="container-add-category">
+        <div class="left">
+            <form class="form-register" action="{{ url_for('editarCategoria', id_categoria=categoria[0]) }}" method="POST" autocomplete="off" enctype="multipart/form-data">
+                <div class="titulo">
+                    <h2>Editar categoría</h2>
+                    <hr>
+                </div>
+                <input type="hidden" name="idCategoria" value="{{ categoria[0] }}">
+                <input class="cate_input" type="text" name="nombreCategoria" value="{{ categoria[1] }}" placeholder="Nombre" required>
+                <input class="fancy_file" type="file" id="File" name="archivo">
+                <label for="File">
+                    <span class="fancy_file_fancyfilebutton">Buscar archivo</span>
+                </label>
+                <button type="submit" id="enviar" class="form__submit">Guardar cambios</button>
+            </form>
+        </div> 
+        <div class="right">
+            <div class="file-dnd">
+            <!-- Mostrar la imagen actual de la categoría -->
+            <div class="before-upload" id="preview">
+            <img class="imgC" src="data:image/png;base64,{{ categoria[2] }}" alt="Imagen de la categoría">
+        </div>
+        <div class="after-upload">
+            <div class="clear-btn">&times;</div>
+            <img src=""/>
+        </div>
+    </div>
+    </div>
+    </div>
+</body>
+</html>
+

@@ -261,6 +261,22 @@ BEGIN
     DELETE FROM categorias WHERE id_categoria = id_cate;
 END EliminarCategoria;
 
+--SP Categorias | EDITAR --
+CREATE OR REPLACE PROCEDURE editar_categoria(
+    p_id IN number,
+    p_nombreCategoria IN VARCHAR2,
+    p_archivo IN BLOB
+)
+IS
+BEGIN
+    UPDATE categorias
+    SET nombre = p_nombreCategoria,
+        archivo = p_archivo
+    WHERE id_categoria = p_id;
+    
+    COMMIT;
+END editar_categoria;
+
 --Triggers y secuencias--
 
 CREATE SEQUENCE seq_categorias START WITH 1 INCREMENT BY 1;
@@ -270,4 +286,68 @@ BEFORE INSERT ON categorias
 FOR EACH ROW
 BEGIN
     SELECT seq_categorias.NEXTVAL INTO :NEW.id_categoria FROM DUAL;
+END;
+
+-- SUBCATEGORIAS --
+
+--SP SubCategoria | Agregar
+CREATE OR REPLACE PROCEDURE AgregarSubCategoria (
+   nombre IN VARCHAR2,
+   categoria_id IN NUMBER
+) AS
+   v_categoria_count NUMBER;
+BEGIN
+   -- Check if the selected category exists in the categorias table
+   SELECT COUNT(1) INTO v_categoria_count FROM categorias WHERE id_categoria = categoria_id;
+
+   IF v_categoria_count = 0 THEN
+      -- Raise an exception if the categoria doesn't exist
+      RAISE_APPLICATION_ERROR(-20001, 'Categoria no existe');
+   END IF;
+
+   -- The selected category exists, proceed with the subcategory insertion
+   INSERT INTO subcategorias (nombre, id_categoria)
+   VALUES (nombre, categoria_id);
+END AgregarSubCategoria;
+
+-- SP SubCategoria | Obtener 
+CREATE OR REPLACE PROCEDURE ObtenerSubcategorias (
+    subcategorias_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+    OPEN subcategorias_cursor FOR
+    SELECT id_subcategoria, nombre,id_categoria
+    FROM subcategorias;
+END ObtenerSubcategorias;
+
+--SP SubCategoria | Eliminar
+CREATE OR REPLACE PROCEDURE EliminarSubCategoria(id_subcate IN NUMBER) AS
+BEGIN
+    DELETE FROM subcategorias WHERE id_subcategoria = id_subcate;
+END EliminarSubCategoria;
+
+--SP SubCategoria | Editar
+CREATE OR REPLACE PROCEDURE editar_subcategoria(
+    p_id in number,
+    p_nombreSubCategoria IN VARCHAR2,
+    p_idcategoria in number
+)
+IS
+BEGIN
+    UPDATE subcategorias
+    SET nombre = p_nombreSubCategoria,
+        id_categoria = p_idcategoria
+    WHERE id_subcategoria = p_id;
+    
+    COMMIT;
+END editar_subcategoria;
+
+-- Triggers y secuencias SubCategorias --
+CREATE SEQUENCE seq_subcategorias START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER trg_before_insert_subcategorias
+BEFORE INSERT ON subcategorias
+FOR EACH ROW
+BEGIN
+    SELECT seq_subcategorias.NEXTVAL INTO :NEW.id_subcategoria FROM DUAL;
 END;

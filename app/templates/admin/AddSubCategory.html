@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SubCategory_Form</title>
+    <link rel="stylesheet" href="../../static/css/admin/addcategory.css">
+    <script src="../../static/js/admin/addcategory.js" defer></script>
+</head>
+<body>
+
+    <div class="container-add-category">
+        <div class="left">
+            <form class="form-register" action="{{ url_for('SubCategory') }}" method="POST" autocomplete="off" enctype="multipart/form-data">
+                <div class="titulo">
+                    <h2>Agregar nueva SubCategoria</h2>
+                    <hr>
+                </div>
+                
+<!-- Dropdown menu para seleccionar categoría -->
+
+                <input class="cate_input" type="text" name="nombreSubCategoria" placeholder="Nombre" required>
+                <div class=dropdown>
+
+<select name="categoria" class="cate_input" required>
+    <option value="" disabled selected hidden>Seleccione una categoría</option>
+    {% for categoria in categorias %}
+    <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+    {% endfor %}
+</select>
+
+                    </div>
+                <button  type="submit" id="enviar" class="form__submit">Agregar</button>
+
+            </form>
+        </div> 
+
+</body>
+</html>

@@ -5,20 +5,21 @@
 }
 
 body{
-    display: flex;
+    display: flex; 
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #eef4fd;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url("https://blog.decoandlemon.com/wp-content/uploads/2020/10/Motivos-para-cambiar-tus-herramientas-de-trabajo.jpg");
 }
 
-.container{
+.container_categorias{
     display: flex;
     flex-direction: column;
     box-shadow: 8pz 8pz 5pz 0pz #bdbdbd;
     width: 80%;
     background-color: #ffffff;
     border-radius: 30px;
+    margin-top: 20px;
 }
 
 .table_header{
@@ -31,10 +32,10 @@ body{
 .button{
     outline: none;
     border: none;
-    background-color: beige;
+    background-color: #ecab41;
     color: black;
     padding: 10px 30px;
-    border-radius: 20px;
+    border-radius: 5px;
     text-transform: uppercase;
     font-size: 12px;
     cursor: pointer;
@@ -45,7 +46,7 @@ body{
 
 
 .table_header button:hover{
-    background-color: beige;
+    background-color: #ecab41;
 }
 
 .table_header select{
@@ -61,12 +62,12 @@ body{
 }
 
 .input_search input{
-    border-radius: 30px;
+    border-radius: 5px;
     width: 200px;
     outline: none;
-    padding: 10px 20px;
+    padding: 5px 20px;
     border: 1px solid #c9c9c9;
-    padding-right: 50px;
+    padding-right: 10px;
 }
 
 .input_search #search{
@@ -80,11 +81,11 @@ body{
 
 table{
     border-spacing: 0;
-    margin-top: 1rem;
+    margin-top: 20px;
 }
 
 thead{
-    background-color: #fff7b3;
+    background-color: #ecab41;
 }
 
 

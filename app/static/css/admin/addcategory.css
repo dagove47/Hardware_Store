@@ -5,8 +5,10 @@
 }
 
 body{
-    background: #ecdda9;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url("https://blog.decoandlemon.com/wp-content/uploads/2020/10/Motivos-para-cambiar-tus-herramientas-de-trabajo.jpg");
     font-family: "Poppins", sans-serif;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .container-add-category{
@@ -22,10 +24,13 @@ body{
     align-items: start;
     gap: 20px;
     flex-grow: -1;
+    margin-right: 20px;
+    margin-left: 20px;
 }
 
 .right{
     flex-grow: 1;
+    margin-left: 20px;
 }
 
 .titulo{
@@ -36,7 +41,7 @@ body{
 
 .titulo h2{
     font-weight: 600;
-    color: black;
+    color: #ecab41;
     font-size: 20px;
     margin-bottom: 5px;
 }
@@ -45,20 +50,24 @@ body{
     border: none;
     width: 120px;
     height: 5px;
-    background-color: black;
+    background-color: white;
     border-radius: 10px;
     margin-bottom: 20px;
 }
 
+.form-register > * {
+    margin-bottom: 10px; /* Agrega un espacio de 10px entre cada elemento del formulario */
+}
+
 .cate_input{
-    width: 400px;
+    width: 320px;
     height: 40px;
     border: none;
     outline: none;
     padding-left: 25px;
     font-weight: 500;
     color: #555;
-    border-radius: 50px;
+    border-radius: 10px;
 }
 
 .cate_input:focus{
@@ -73,12 +82,30 @@ body{
     display: flex;
     align-items: center;
     padding: 5px 20px;
-    font-size: 16px;
+    font-size: 13px;
     color: black;
     gap: 10px;
     border: none;
-    border-radius: 50px;
+    border-radius: 5px;
     background: linear-gradient(270deg, #e9b663, #ecab41);
+    cursor: pointer;
+}
+
+.fancy_file{
+    display: none;
+}
+
+.fancy_file + label {
+    display: flex;
+}
+
+
+.fancy_file_fancyfilebutton{
+    background: #e9b663;
+    border: none;
+    padding: 5px 115px;
+    border-radius: 5px;
+    font-size: 13px;
     cursor: pointer;
 }
 
@@ -98,8 +125,8 @@ body{
 
 .file-dnd{
     max-width: 500px;
-    width: 98%;
-    height: 320px;
+    width: 80%;
+    height: 300px;
     background: #fff;
     border-radius: 10px;
     border: 1px solid #ddd;
@@ -182,5 +209,22 @@ body{
     cursor: pointer;
     font-size: 12px;
 }
+
+
+.imgC {
+    width: 250px; /* Ancho deseado */
+    height: auto; /* Altura ajustada automáticamente para mantener la proporción */
+}
+
+/* Estilo para el dropdown */
+select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+
 
 

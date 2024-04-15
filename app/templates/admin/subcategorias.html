@@ -20,29 +20,30 @@
     
 <div class="container_categorias">
     <div class="table_header">
-        <h2>Categorias</h2>
-        <a href="/admin/AddCategoria" class="button">Nuevo</a>
+        <h2>Sub Categorias</h2>
+        <a href="/admin/AddSubCategoria" class="button">Nuevo</a>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>Nombre</th>
-                <th>Archivo</th>
+                <th>SubCategoria</th>
+                <th>Categoria</th>
                 <th>Operaciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for categoria in categorias %}
+            {% for subcategoria in subcategorias %}
             <tr>
-                <td>{{ categoria[1] }}</td>
-                <td><img class="imgC" src="data:image/png;base64,{{ categoria[2] }}" alt="Imagen de la categoría"></td>
+                <td>{{ subcategoria[1] }}</td>
+                <td>{{ subcategoria[2] }}</td>
+
             <td>
-                <a href="{{ url_for('editarCategoria', id_categoria=categoria[0]) }}">
+                <a href="{{ url_for('editarSubCategoria', id_subcategoria=subcategoria[0]) }}">
                     <i class="bi bi-pencil-square icons"></i>
                 </a>
 
-                <a href="{{ url_for('eliminarCategoria', id_categoria=categoria[0]) }}">
+                <a href="{{ url_for('eliminarSubCategoria', id_subcategoria=subcategoria[0]) }}">
                     <i class="bi bi-trash2 icons"></i>
                 </a>
             </td>
