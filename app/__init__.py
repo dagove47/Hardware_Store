@@ -52,9 +52,6 @@ def login():
 def register():
     return render_template('register.html')
 
-@app.route('/productos')
-def productos():
-    return render_template('productos.html')
 
 @app.route('/admin/categorias')
 def obtener_categorias():
@@ -258,48 +255,131 @@ def editarSubCategoria(id_subcategoria):
 
 ####################PRODUCTOS########################
 
-@app.route('/productos1')
-def productos1():
-    conn, cursor = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM productos")
-    productos = cursor.fetchall()
-    cursor.close()
-    return render_template('productos.html', productos=productos)
 
-# Ruta para crear un nuevo producto
+from contextlib import contextmanager
+@app.route('/')
+def prin():
+    return 'Hola Mundo desde Flask!'
+
 @app.route('/crear_producto', methods=['POST'])
 def crear_producto():
-    if request.method == 'POST':
-        conn, cursor = get_db_connection()
-        data = request.form
-        cursor = conn.cursor()
-        cursor.callproc("crear_producto", [data['id_producto'], data['nombre'], data['descripcion'], data['proveedor'], data['precio'], data['descuento'], data['cantidad_stock']])
-        cursor.close()
-        conn.commit()
-    return productos()
+    data = request.form
+    try:
+        # Convertir datos a tipos apropiados
+        id_producto = int(data['id_producto'])
+        nombre = data['nombre']
+        descripcion = data['descripcion']
+        proveedor = data['proveedor']
+        precio = float(data['precio'])  # Cambiar a float si el precio puede tener decimales
+        descuento = float(data['descuento'])
+        cantidad_stock = int(data['cantidad_stock'])
+        
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
+            # Llamar al procedimiento almacenado con los parámetros adecuados
+            cursor.callproc("crear_producto", [
+                id_producto,
+                nombre,
+                descripcion,
+                proveedor,
+                precio,
+                descuento,
+                cantidad_stock
+            ])
+            connection.commit()
+            cursor.close()
+        print(f"Producto {nombre} creado con éxito.")
+    except cx_Oracle.DatabaseError as e:
+        print(f"Error al crear producto: {e}")
+    except Exception as e:
+        print(f"Error general: {e}")
+    return redirect(url_for('listar_productos'))
 
-# Ruta para actualizar un producto
-@app.route('/actualizar_producto', methods=['POST'])
-def actualizar_producto():
-    if request.method == 'POST':
-        conn, cursor = get_db_connection()
-        data = request.form
-        cursor = conn.cursor()
-        cursor.callproc("actualizar_producto", [data['id_producto'], data['nombre'], data['descripcion'], data['proveedor'], data['precio'], data['descuento'], data['cantidad_stock']])
-        cursor.close()
-        conn.commit()
-    return productos()
 
-# Ruta para eliminar un producto
-@app.route('/eliminar_producto/<int:id_producto>')
+
+@app.route('/productos')
+def listar_productos():
+    print("Fetching products...")
+    with get_db_connection() as connection:
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM PRODUCTOS ORDER BY ID_PRODUCTO")
+        productos = cursor.fetchall()  # Esto recupera todos los productos de la base de datos
+        print(productos)  
+        cursor.close()
+    return render_template('productos.html', productos=productos)
+
+
+
+@app.route('/actualizar_producto/<int:id_producto>', methods=['POST'])
+def actualizar_producto(id_producto):
+    data = request.form
+    try:
+        # Convertir los datos del formulario a los tipos correctos, si es necesario.
+        nombre = data.get('nombre', type=str)
+        descripcion = data.get('descripcion', type=str)
+        proveedor = data.get('proveedor', type=str)
+        precio = data.get('precio', type=float)
+        descuento = data.get('descuento', type=float)
+        cantidad_stock = data.get('cantidad_stock', type=int)
+
+        # Usar el contexto de la base de datos para llamar al procedimiento.
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
+            cursor.callproc("actualizar_producto", [
+                id_producto,
+                nombre,
+                descripcion,
+                proveedor,
+                precio,
+                descuento,
+                cantidad_stock
+            ])
+            connection.commit()
+        print(f"Producto con ID {id_producto} actualizado con éxito.")
+    except cx_Oracle.DatabaseError as e:
+        print(f"Error al actualizar producto: {e}")
+        return str(e), 500
+    except Exception as e:
+        print(f"Error inesperado: {e}")
+        return str(e), 500
+    return redirect(url_for('listar_productos'))
+
+
+
+@app.route('/eliminar_producto/<int:id_producto>', methods=['POST'])
 def eliminar_producto(id_producto):
-    conn, cursor = get_db_connection()
-    cursor = conn.cursor()
-    cursor.callproc("eliminar_producto", [id_producto])
-    cursor.close()
-    conn.commit()
-    return productos()
+    with get_db_connection() as connection:
+        cursor = connection.cursor()
+        cursor.callproc("eliminar_producto", [id_producto])
+        connection.commit()
+        cursor.close()
+    return redirect(url_for('listar_productos'))
 
-if __name__ == '__main__':
+
+@app.route('/database')
+def test_database():
+
+    
+    conn = cx_Oracle.connect(DB_CONNECTION_STRING)
+    cursor = conn.cursor()
+    cursor.execute("SELECT 'Conectado a Oracle Database!' FROM DUAL")
+    message = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return message[0]  
+
+@contextmanager
+def get_db_connection():
+    conn = cx_Oracle.connect(DB_CONNECTION_STRING)
+    try:
+        yield conn
+    except cx_Oracle.DatabaseError as e:
+        print(f"Database error: {e}")
+        raise
+    finally:
+        conn.close()
+
+if __name__ == "__main__":
     app.run(debug=True)

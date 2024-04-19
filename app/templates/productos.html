@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="../static/css/productos.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">CRUD de Productos</h1>
@@ -17,10 +19,11 @@
             <input type="text" name="proveedor" placeholder="Proveedor" class="form-control mb-2" required>
             <input type="number" name="precio" placeholder="Precio" class="form-control mb-2" required>
             <input type="number" name="descuento" placeholder="Descuento" class="form-control mb-2" required>
-            <input type="number" name="cantidad_stock" placeholder="Cantidad en stock" class="form-control mb-2" required>
+            <input type="number" name="cantidad_stock" placeholder="Cantidad en stock" class="form-control mb-2"
+                required>
             <button type="submit" class="btn btn-primary">Crear Producto</button>
         </form>
-        
+
         <table class="table">
             <thead>
                 <tr>
@@ -40,15 +43,96 @@
                     <td>{{ producto[0] }}</td>
                     <td>{{ producto[1] }}</td>
                     <td>{{ producto[2] }}</td>
+                    <td>{{ producto[3] }}</td>
+                    <td>{{ producto[4] }}</td>
+                    <td>{{ producto[5] }}</td>
+                    <td>{{ producto[6] }}</td>
                     <td>
-                        <form action="/eliminar_producto/{{ producto[0] }}" method="POST">
+                        <form action="{{ url_for('eliminar_producto', id_producto=producto[0]) }}" method="POST">
                             <button type="submit" class="btn btn-danger">Eliminar</button>
                         </form>
+                        <button type="button" class="btn btn-primary"
+                            onclick='showEditProductModal({{ producto | tojson | safe }})'>Actualizar</button>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <!-- Modal para editar producto -->
+        <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProductModalLabel">Editar Producto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="updateForm" action="" method="POST">
+                            <input type="hidden" id="modalIdProducto" name="id_producto">
+                            <div class="mb-3">
+                                <label for="modalNombre" class="form-label">Nombre</label>
+                                <input type="text" id="modalNombre" name="nombre" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modalDescripcion" class="form-label">Descripción</label>
+                                <input type="text" id="modalDescripcion" name="descripcion" class="form-control"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modalProveedor" class="form-label">Proveedor</label>
+                                <input type="text" id="modalProveedor" name="proveedor" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modalPrecio" class="form-label">Precio</label>
+                                <input type="number" id="modalPrecio" name="precio" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modalDescuento" class="form-label">Descuento</label>
+                                <input type="number" id="modalDescuento" name="descuento" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="modalCantidadStock" class="form-label">Cantidad en Stock</label>
+                                <input type="number" id="modalCantidadStock" name="cantidad_stock" class="form-control"
+                                    required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary" form="updateForm">Guardar Cambios</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showEditProductModal(producto) {
+            // Configurar la acción del formulario con la URL correcta
+            var updateForm = document.querySelector('#updateForm');
+            updateForm.action = '/actualizar_producto/' + producto[0];
+
+            // Configurar los valores de los campos
+            document.querySelector('#modalNombre').value = producto[1];
+            document.querySelector('#modalDescripcion').value = producto[2];
+            document.querySelector('#modalProveedor').value = producto[3];
+            document.querySelector('#modalPrecio').value = producto[4];
+            document.querySelector('#modalDescuento').value = producto[5];
+            document.querySelector('#modalCantidadStock').value = producto[6];
+
+            // Guardar el ID del producto en un campo oculto
+            var idInput = updateForm.querySelector('#modalIdProducto');
+            idInput.value = producto[0];
+
+            // Mostrar el modal
+            var editModal = new bootstrap.Modal(document.getElementById('editProductModal'));
+            editModal.show();
+        }
+    </script>
+
 </body>
+
 </html>
