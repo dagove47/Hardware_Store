@@ -383,3 +383,52 @@ def get_db_connection():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+@app.route('/crear_usuario', methods=['POST'])
+def crear_usuario():
+    data = request.form
+    try:
+        # Convertir datos a tipos apropiados
+        id_usuario = data['ID_Usuario']
+        contrasena = data['Contrasena']
+        nombre = data['NombreUsuario']
+        direccion = data['Direccion']
+        telefono = data['Telefono']  
+        
+        rol = 2  # Establecer un valor predeterminado para el rol (el 2 significa que es un cliente)
+
+        if "@admin.com" in id_usuario: 
+            rol=1
+
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
+            # Llamar al procedimiento almacenado con los parámetros adecuados
+            cursor.callproc("crear_usuario", [
+                id_usuario,
+                contrasena,
+                nombre,
+                direccion,
+                telefono,
+                rol
+            ])
+            connection.commit()
+            cursor.close()
+        print(f"Usuario {nombre} creado con éxito.")
+    except cx_Oracle.DatabaseError as e:
+        print(f"Error al crear usuario: {e}")
+    except Exception as e:
+        print(f"Error general: {e}")
+    return redirect(url_for('login'))
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        
+        return redirect(url_for('login'))  # Redirige a la página de inicio de sesión después del registro
+    else:
+        
+        return render_template('signup.html')
+
+
+
