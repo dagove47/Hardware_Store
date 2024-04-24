@@ -44,9 +44,6 @@ def index():
 def home():
     return render_template('home.html')
 
-@app.route('/login')
-def login():
-    return render_template('login.html')
 
 @app.route('/register')
 def register():
@@ -356,6 +353,7 @@ def eliminar_producto(id_producto):
     return redirect(url_for('listar_productos'))
 
 
+
 @app.route('/database')
 def test_database():
 
@@ -384,6 +382,8 @@ def get_db_connection():
 if __name__ == "__main__":
     app.run(debug=True)
 
+
+#SIGNUP
 
 @app.route('/crear_usuario', methods=['POST'])
 def crear_usuario():
@@ -463,5 +463,148 @@ def borrar_resena(id_resena):
  
     return redirect(url_for('resenas'))
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+
+@app.route('/empleados')
+def empleados():
+    return render_template('empleados.html')
+
+# LOGIN
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    with get_db_connection() as conn:
+        if request.method == 'POST':
+            cursor = conn.cursor()
+            ID_Usuario = request.form['ID_Usuario']
+            Contrasena = request.form['Contrasena']
+
+            cursor.execute("SELECT * FROM Usuarios WHERE ID_Usuario = :ID_Usuario AND Contrasena = :Contrasena",
+                           {"ID_Usuario": ID_Usuario, "Contrasena": Contrasena})
+            user = cursor.fetchone()
+
+            if user:
+                session['ID_Usuarios'] = user[0]
+                session['id_rol'] = user[5]  # Campo del role
+
+                # Condicional rol
+                if session['id_rol'] == 1:
+                    return redirect(url_for('empleados'))
+                elif session['id_rol'] == 2:
+                    return redirect(url_for('home'))
+
+            else:
+                error = "Invalid credentials. Please try again."
+                return render_template('login.html', error=error)
+
+    return render_template('login.html')
+
+
+#ROLES 
+
+from functools import wraps
+from flask import session, flash, redirect, url_for
+
+def role_required(required_role):
+    def decorator(func):
+        @wraps(func)
+        def decorated_function(*args, **kwargs):
+            if 'id_rol' in session and session['id_rol'] == required_role:
+                return func(*args, **kwargs)
+            else:
+                flash('You do not have the required permissions to access this page.', 'danger')
+                return redirect('/')
+        return decorated_function
+    return decorator    
+
+
+##Empleados
+
+@app.route('/crear_empleado', methods=['POST'])
+def crear_empleado():
+    data = request.form
+    try:
+        # Convertir datos a tipos apropiados
+        Id_empleado = int(data['Id_empleado'])
+        Nombre_empleado = data['Nombre_empleado']
+        Apellido_empleado = data['Apellido_empleado']
+        CargoEmpleado = data['CargoEmpleado']
+        Departamento = data['Departamento']  
+        Salario = float(data['Salario'])
+        
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
+            # Llamar al procedimiento almacenado con los parámetros adecuados
+            cursor.callproc("crear_empleado", [
+                Id_empleado,
+                Nombre_empleado,
+                Apellido_empleado,
+                CargoEmpleado,
+                Departamento,
+                Salario
+            ])
+            connection.commit()
+            cursor.close()
+        print(f"Empleado {Nombre_empleado} creado con éxito.")
+    except cx_Oracle.DatabaseError as e:
+        print(f"Error al crear empleado: {e}")
+    except Exception as e:
+        print(f"Error general: {e}")
+    return redirect(url_for('listar_empleados'))
+
+
+
+@app.route('/empleados')
+def listar_empleados():
+    print("Fetching products...")
+    with get_db_connection() as connection:
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM EMPLEADOS ORDER BY Id_empleado")
+        empleados = cursor.fetchall()  # Esto recupera todos los empleados de la base de datos
+        print(empleados)  
+        cursor.close()
+    return render_template('empleados.html', empleados=empleados)
+
+
+
+@app.route('/actualizar_empleado/<int:Id_empleado>', methods=['POST'])
+def actualizar_empleado(Id_empleado):
+    data = request.form
+    try:
+        # Convertir los datos del formulario a los tipos correctos, si es necesario.
+        Nombre_empleado = data.get('Nombre_empleado', type=str)
+        Apellido_empleado = data.get('Apellido_empleado', type=str)
+        CargoEmpleado = data.get('CargoEmpleado', type=str)
+        Departamento = data.get('Departamento', type=str)
+        Salario = data.get('Salario', type=float)
+
+        # Usar el contexto de la base de datos para llamar al procedimiento.
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
+            cursor.callproc("actualizar_empleado", [
+                Id_empleado,
+                Nombre_empleado,
+                Apellido_empleado,
+                CargoEmpleado,
+                Departamento,
+                Salario
+            ])
+            connection.commit()
+        print(f"Empleado con ID {Id_empleado} actualizado con éxito.")
+    except cx_Oracle.DatabaseError as e:
+        print(f"Error al actualizar producto: {e}")
+        return str(e), 500
+    except Exception as e:
+        print(f"Error inesperado: {e}")
+        return str(e), 500
+    return redirect(url_for('listar_empleados'))
+
+
+
+@app.route('/eliminar_empleado/<int:Id_empleado>', methods=['POST'])
+def eliminar_empleado(Id_empleado):
+    with get_db_connection() as connection:
+        cursor = connection.cursor()
+        cursor.callproc("eliminar_empleado", [Id_empleado])
+        connection.commit()
+        cursor.close()
+    return redirect(url_for('listar_empleados'))

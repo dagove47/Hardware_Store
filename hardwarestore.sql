@@ -85,12 +85,10 @@ END eliminar_producto;
 CREATE TABLE Usuarios (
     ID_Usuario VARCHAR2(100) PRIMARY KEY,
     Contrasena VARCHAR2(50),
-    Nombre VARCHAR2(100),
+    NombreUsuario VARCHAR2(100),
     Direccion VARCHAR2(200),
-    provincia VARCHAR2(50),
     Telefono NUMBER,
-    fecNacimiento DATE,
-    Rol CHAR(1) CHECK (Rol IN ('Admin', 'Usuario'))
+    id_rol INT
 );
 
 -- Crear un nuevo usuario
@@ -99,15 +97,13 @@ CREATE OR REPLACE PROCEDURE crear_usuario(
     u_contrasena IN VARCHAR2,
     u_nombre IN VARCHAR2,
     u_direccion IN VARCHAR2,
-    u_provincia IN VARCHAR2,
     u_telefono IN NUMBER,
-    u_fec_nacimiento IN DATE,
-    u_rol IN CHAR
+    u_rol IN INT
 )
 AS
 BEGIN
-    INSERT INTO Usuarios (ID_Usuario, Contrasena, Nombre, Direccion, provincia, Telefono, fecNacimiento, Rol)
-    VALUES (u_id_usuario, u_contrasena, u_nombre, u_direccion, u_provincia, u_telefono, u_fec_nacimiento, u_rol);
+    INSERT INTO Usuarios (ID_Usuario, Contrasena, NombreUsuario, Direccion, Telefono, id_rol)
+    VALUES (u_id_usuario, u_contrasena, u_nombre, u_direccion, u_telefono, u_rol);
     COMMIT;
 END crear_usuario;
 /

@@ -1,0 +1,97 @@
+.loader{
+    position: fixed;
+     top: 0;
+     left: 0;
+     width: 100vw;
+     height: 100vh;
+     z-index: 100000000;
+     background: #cecece;
+     opacity: 0.5; 
+ }
+ 
+.logo{
+    max-width: 120px;
+    height: auto;
+}
+.bg-light{
+    height: 60px;
+    box-shadow: 0 4px 32px 0 rgba(10,14,29,.02),0 8px 64px 0 rgba(10,14,29,.08);
+}
+.carro{
+    max-width: 100px !important;
+}
+section{
+    padding: 15px 10px;
+    border-radius: 5px;
+    margin: 0 auto;
+    width: 80% !important;
+    background-color: #f2f4f8 !important;
+    margin-bottom: 50px;
+}
+label{
+    float: left !important;
+    padding: 5px;
+    margin-top: 6px;
+}
+.left{
+    float: left;
+}
+thead{
+    background-color: lavender !important;
+}
+.list-group-item{
+    display: flex !important;
+}
+.list-group-item strong{
+    padding: 0px 0px 0px 20px !important;
+}
+
+.card{
+    margin: 0 auto !important;
+}
+.card-body{
+    background-color: #f2f4f8;
+}
+.sin_foto{
+    width: 200px;
+    margin: 0 auto;
+}
+.sin_foto_mini{
+    padding: 0px;
+    width: 50px;
+    margin: 0 auto;
+}
+.card-img-top{
+    margin: 0 auto;
+}
+.table>tbody {
+    vertical-align: baseline !important;
+}
+input{
+    text-transform: capitalize !important;
+}
+.form-check-inline{
+    float: left;
+}
+.bold{
+    font-weight: bold;
+}
+.bold-800{
+    font-weight: 800;
+}
+.foto_update{
+    max-width: 250px;
+}
+input[type='file']{
+    float: left;
+}
+.btn-block{
+    width: 50%;
+}
+h2{
+    font-weight: bold;
+    color: darkcyan;
+}
+.bi-arrow-left-circle:hover{
+    color: #333;
+}

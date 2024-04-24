@@ -1,0 +1,90 @@
+body {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #ffffff; 
+    font-family: Arial, sans-serif;
+
+    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(0, 0, 0, 0.5)), url("https://img.freepik.com/foto-gratis/trabajadores-cascos-chaquetas-reflectantes-caminando-gran-pasillo-almacen-comprobando-estado-mercancias_342744-1450.jpg?size=626&ext=jpg&ga=GA1.2.631040719.1692130811&semt=sph");
+    
+}
+
+
+/* Estilos para el contenedor principal */
+.container {
+    max-width: 800px; /* Ancho máximo del contenedor */
+    margin: 0 auto; /* Centrar el contenedor horizontalmente */
+    padding: 20px; /* Espaciado interno del contenedor */
+    position: absolute; /* Posición absoluta para centrar verticalmente */
+    text-align: center;
+    top: 50%; /* Ubicación vertical en el 50% de la pantalla */
+    left: 50%; /* Ubicación horizontal en el 50% de la pantalla */
+    transform: translate(-50%, -50%); /* Centrar completamente el contenedor */
+}
+
+
+/* Estilos para los formularios */ 
+form {
+    margin-bottom: 20px; /* Espaciado inferior del formulario */
+}
+
+.formEmpleado{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.formBox{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.inputBox{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.submitBtn{
+    width: 200px;
+}
+
+/* Estilos para las tablas */
+table {
+    width: 50%; /* Ancho completo de la tabla */
+    margin-bottom: 20px; /* Espaciado inferior de la tabla */
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente para la tabla */
+    border-radius: 8px; /* Bordes redondeados */
+}
+
+/* Estilos para las filas de la tabla */
+tr {
+    color: #ffffff;
+    text-align: center; /* Centrar el contenido de las filas */
+}
+
+/* Estilos para las celdas de la tabla */
+th,
+td {
+    max-width: 250px; /* Ancho máximo de las celdas */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Agregar puntos suspensivos si el texto es demasiado largo */
+    white-space: nowrap; /* Evitar que el texto se desborde */
+    text-align: center; /* Centrar el contenido de las celdas */
+}
+
+/* Estilos para los botones */
+.btn {
+    margin-right: 5px; /* Espaciado derecho de los botones */
+}
+
+/* Estilos para los campos de entrada en el formulario */
+.form-control {
+    width: 100%; /* Ancho del campo de entrada al 100% del contenedor */
+    max-width: 300px; /* Ancho máximo para evitar que se expandan demasiado */
+    margin-bottom: 10px; /* Espaciado inferior de los campos de entrada */
+}
+
