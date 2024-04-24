@@ -431,4 +431,37 @@ def signup():
         return render_template('signup.html')
 
 
+#####################################RESENAS################################
+@app.route('/resenas')
+def resenas():     
+    with get_db_connection() as conn:         
+        cursor = conn.cursor()         
+        cursor.execute("SELECT * FROM Resenas")        
+        resenas = cursor.fetchall()     
+        return render_template('resenas.html', resenas=resenas)
+ 
+from datetime import datetime 
+@app.route('/crear_resena', methods=['POST'])
+def crear_resena():     
+    with get_db_connection() as conn:         
+        cursor = conn.cursor()         
+        id_resena = request.form['id_resena']         
+        comentario = request.form['comentario']         
+        calificacion = request.form['calificacion']         
+        fecha_resena = datetime.strptime(request.form['fecha_resena'], '%Y-%m-%d').date()                   
+        cursor.callproc("crear_resena", [id_resena, comentario, calificacion, fecha_resena])         
+        conn.commit()     
+        return redirect(url_for('resenas'))
+ 
+ 
+@app.route('/borrar_resena/<int:id_resena>', methods=['GET'])
+def borrar_resena(id_resena):
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.callproc("borrar_resena", [id_resena])
+        conn.commit()
+ 
+    return redirect(url_for('resenas'))
 
+if __name__ == '__main__':
+    app.run(debug=True)

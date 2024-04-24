@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Reseñas</title>
+    <link rel="stylesheet" href="../static/css/resenas.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>CRUD Reseñas</h1>
+        <form method="POST" action="/crear_resena">
+            <div class="form-group label">
+                <label >ID Reseña:</label>
+                <input type="number" class="form-control" name="id_resena" required>
+            </div>
+            <div class="form-group label">
+                <label>Comentario:</label>
+                <input type="text" class="form-control" name="comentario" required>
+            </div>
+            <div class="form-group label">
+                <label>Calificación:</label>
+                <input type="number" class="form-control" name="calificacion" required>
+            </div>
+            <div class="form-group label">
+                <label>Fecha Reseña:</label>
+                <input type="date" class="form-control" name="fecha_resena" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Crear Reseña</button>
+        </form>
+
+        <h2>Listado de Reseñas</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Reseña</th>
+                    <th>Comentario</th>
+                    <th>Calificación</th>
+                    <th>Fecha Reseña</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resena in resenas %}
+                <tr>
+                    <td>{{ resena[0] }}</td>
+                    <td>{{ resena[1] }}</td>
+                    <td>{{ resena[2] }}</td>
+                    <td>{{ resena[3] }}</td>
+                    <td>
+                        <form method="GET" action="/borrar_resena/{{ resena[0] }}">
+                            <button type="submit" class="btn btn-danger">Borrar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

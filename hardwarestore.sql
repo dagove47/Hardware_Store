@@ -351,3 +351,51 @@ FOR EACH ROW
 BEGIN
     SELECT seq_subcategorias.NEXTVAL INTO :NEW.id_subcategoria FROM DUAL;
 END;
+
+
+------------------------RESENAS---------------------
+
+CREATE TABLE Resenas (
+    ID_Resena NUMBER PRIMARY KEY,
+    Comentario VARCHAR2(1000),
+    Calificacion NUMBER,
+    Fecha_Resena DATE
+);
+
+
+-- CREATE
+CREATE OR REPLACE PROCEDURE crear_resena (
+    p_id_resena IN NUMBER,
+    p_comentario IN VARCHAR2,
+    p_calificacion IN NUMBER,
+    p_fecha_resena IN DATE
+) AS
+BEGIN
+    INSERT INTO Resenas (ID_Resena, Comentario, Calificacion, Fecha_Resena)
+    VALUES (p_id_resena, p_comentario, p_calificacion, p_fecha_resena);
+    COMMIT;
+END;
+/
+
+-- READ
+CREATE OR REPLACE FUNCTION obtener_resena(p_id_resena IN NUMBER) RETURN Resenas%ROWTYPE AS
+    resena_row Resenas%ROWTYPE;
+BEGIN
+    SELECT * INTO resena_row FROM Resenas WHERE ID_Resena = p_id_resena;
+    RETURN resena_row;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Reseña no encontrada');
+        RETURN NULL;
+END;
+/
+
+
+
+-- DELETE
+CREATE OR REPLACE PROCEDURE borrar_resena (p_id_resena IN NUMBER) AS
+BEGIN
+    DELETE FROM Resenas WHERE ID_Resena = p_id_resena;
+    COMMIT;
+END;
+/
