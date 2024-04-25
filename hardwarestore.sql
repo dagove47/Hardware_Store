@@ -540,3 +540,108 @@ BEGIN
     DELETE FROM Detalle_Pedido WHERE ID_Detalle = p_ID_Detalle;
     COMMIT;
 END EliminarDetallePedido
+
+
+---------------- PROMOCIONES -----------------------------
+CREATE TABLE promociones (
+    id NUMBER PRIMARY KEY,
+    titulo VARCHAR2(20),
+    descripcion VARCHAR2(50),
+    fecha VARCHAR2(10),
+    archivo BLOB
+);
+
+CREATE SEQUENCE promociones_seq START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE PROCEDURE insertar_promocion(
+    p_titulo IN VARCHAR2,
+    p_descripcion IN VARCHAR2,
+    p_fecha IN VARCHAR2,
+    p_archivo IN BLOB
+) AS
+BEGIN
+    INSERT INTO promociones (id, titulo, descripcion, fecha, archivo)
+    VALUES (promociones_seq.NEXTVAL, p_titulo, p_descripcion, p_fecha, p_archivo);
+    COMMIT;
+END insertar_promocion;
+
+
+CREATE OR REPLACE PROCEDURE actualizar_promocion(
+    p_id IN NUMBER,
+    p_titulo IN VARCHAR2,
+    p_descripcion IN VARCHAR2,
+    p_fecha IN VARCHAR2,
+    p_archivo IN BLOB
+) AS
+BEGIN
+    UPDATE promociones
+    SET titulo = p_titulo,
+        descripcion = p_descripcion,
+        fecha = p_fecha,
+        archivo = p_archivo
+    WHERE id = p_id;
+    COMMIT;
+END actualizar_promocion;
+
+CREATE OR REPLACE PROCEDURE eliminar_promocion(
+    p_id IN NUMBER
+) AS
+BEGIN
+    DELETE FROM promociones WHERE id = p_id;
+    COMMIT;
+END eliminar_promocion;
+
+CREATE TABLE promociones_audit (
+    old_id NUMBER,
+    new_id NUMBER,
+    user_name VARCHAR2(100),
+    change_date DATE,
+    action VARCHAR2(10)
+);
+
+CREATE OR REPLACE TRIGGER promociones_trigger
+BEFORE INSERT OR UPDATE OR DELETE ON promociones
+FOR EACH ROW
+BEGIN
+    IF INSERTING THEN
+        INSERT INTO promociones_audit VALUES (:OLD.id, :NEW.id, USER, SYSDATE, 'INSERT');
+    ELSIF UPDATING THEN
+        INSERT INTO promociones_audit VALUES (:OLD.id, :NEW.id, USER, SYSDATE, 'UPDATE');
+    ELSIF DELETING THEN
+        INSERT INTO promociones_audit VALUES (:OLD.id, NULL, USER, SYSDATE, 'DELETE');
+    END IF;
+END promociones_trigger;
+
+CREATE OR REPLACE FUNCTION total_promociones RETURN NUMBER IS
+    v_total NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_total FROM promociones;
+    RETURN v_total;
+END total_promociones;
+
+CREATE OR REPLACE VIEW promociones_activas AS
+SELECT * FROM promociones WHERE fecha >= SYSDATE;
+
+CREATE OR REPLACE PROCEDURE obtener_promociones(p_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+    OPEN p_cursor FOR SELECT * FROM promociones;
+END obtener_promociones;
+
+CREATE OR REPLACE PROCEDURE obtener_promocion_por_id(
+    p_id IN NUMBER,
+    p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+    OPEN p_cursor FOR SELECT * FROM promociones WHERE id = p_id;
+END obtener_promocion_por_id;
+
+drop procedure obtener_promocion_por_id
+
+CREATE OR REPLACE FUNCTION obtener_promocion_por_id(
+    p_id IN NUMBER
+) RETURN SYS_REFCURSOR AS
+    cur SYS_REFCURSOR;
+BEGIN
+    OPEN cur FOR SELECT * FROM promociones WHERE id = p_id;
+    RETURN cur;
+END obtener_promocion_por_id;

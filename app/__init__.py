@@ -773,3 +773,126 @@ def eliminar_detalle_pedido(id_detalle):
 @app.errorhandler(404)
 def page_not_found(error):
     return "404 - Page not found", 404
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#------------ PROMOCIONES --------------#
+
+@app.route('/promociones')
+def ver_promos():
+    with get_db_connection() as connection:
+        cursor = connection.cursor()
+        promociones_cursor = cursor.var(cx_Oracle.CURSOR)
+        cursor.callproc('Obtener_promociones', [promociones_cursor])
+        promociones = promociones_cursor.getvalue()
+    
+    # Convertir el objeto LOB BLOB a base64 y decodificarlo a UTF-8
+        promociones_con_base64 = []
+        for promocion in promociones:
+            id = promocion[0] #  el id está en la posición 0
+            Titulo = promocion[1] 
+            Descripcion = promocion[2]
+            Fecha = promocion[3]
+            archivo_blob = promocion[4]  # el objeto LOB BLOB está en la posición 2
+            archivo_base64 = base64.b64encode(archivo_blob.read()).decode('utf-8')
+            promociones_con_base64.append((id,Titulo,Descripcion,Fecha, archivo_base64))
+
+        cursor.close()
+        return render_template('/promociones.html', promociones=promociones_con_base64)
+
+#Formulario promociones
+@app.route('/admin/addpromo' ,methods = [ 'GET','POST'])
+
+def AddPromo():
+    if request.method == 'POST':
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
+        # Obtener datos del formulario
+            Titulo = request.form ['Titulo']
+            descripcion = request.form ['Descripcion']
+            fecha = request.form ['Fecha']
+            archivo = request.files['archivo'].read()
+
+            # Llamar al procedimiento PL/SQL para crear un proveedor
+            cursor.callproc('insertar_promocion', [Titulo,descripcion,fecha,archivo])
+
+            cursor.close()
+            return redirect(url_for('obtener_promociones'))
+    return render_template('/Admin/AddPromo.html')
+
+@app.route('/admin/promociones')
+def obtener_promociones():
+    with get_db_connection() as connection:
+        cursor = connection.cursor()
+        promociones_cursor = cursor.var(cx_Oracle.CURSOR)
+        cursor.callproc('Obtener_promociones', [promociones_cursor])
+        promociones = promociones_cursor.getvalue()
+    
+    # Convertir el objeto LOB BLOB a base64 y decodificarlo a UTF-8
+        promociones_con_base64 = []
+        for promocion in promociones:
+            id = promocion[0] #  el id está en la posición 0
+            Titulo = promocion[1] 
+            Descripcion = promocion[2]
+            Fecha = promocion[3]
+            archivo_blob = promocion[4]  # el objeto LOB BLOB está en la posición 2
+            archivo_base64 = base64.b64encode(archivo_blob.read()).decode('utf-8')
+            promociones_con_base64.append((id,Titulo,Descripcion,Fecha, archivo_base64))
+
+        cursor.close()
+        return render_template('/admin/promos.html', promociones=promociones_con_base64)
+
+@app.route('/admin/promociones/eliminar/<int:id_promocion>')
+def eliminarpromociones(id_promocion):
+    with get_db_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.callproc('Eliminar_promocion', (id_promocion,))
+            connection.commit()
+    return redirect(url_for('obtener_promociones'))
+
+
+@app.route('/admin/promociones/editar/<int:id_promocion>', methods=['GET', 'POST'])
+def editar_promociones(id_promocion):
+    with get_db_connection() as connection:
+        cursor = connection.cursor()
+
+        if request.method == 'POST':
+            # Obtener datos del formulario
+            Titulo = request.form['Titulo']
+            descripcion = request.form['Descripcion']
+            fecha = request.form['Fecha']
+            archivo = request.files['archivo'].read()
+
+            # Llamar al procedimiento PL/SQL para editar la categoría
+            cursor.callproc('actualizar_promocion', [id_promocion, Titulo, descripcion, fecha, archivo])
+            return redirect(url_for('obtener_promociones'))
+
+        cursor.execute("SELECT * FROM promociones WHERE id = :id", {"id": id_promocion})
+        promocion = cursor.fetchone()
+        promocion_con_base64 = (promocion[0],promocion[1],promocion[2], promocion[3], base64.b64encode(promocion[4].read()).decode('utf-8'))
+        cursor.close()
+
+    return render_template('/admin/EditPromo.html', promocion=promocion_con_base64)

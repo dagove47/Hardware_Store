@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/categoriasmenu.css">
+    <link rel="stylesheet" href="../static/css/cards.css">
+    <title>Promociones</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/home">Deposito Aurora</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+        </div>
+    </section>
+
+    <section class="promo-cards">
+        <div class="container">
+            <div class="row">
+                {% for promo in promociones %}
+                <div class="col-md-4 d-flex ftco-animate">
+                    <div class="blog-entry align-self-stretch">
+                        <img src="data:image/png;base64,{{ promo[4] }}" class="cblock-20" alt="archivo">
+                        
+                        <div class="text py-4 d-block">
+                            <h6><a href="#">{{ promo[1] }}</a></h6>
+                            <p>{{ promo[2] }}</p>
+                            <p class="card-text"><small class="text-muted">{{ promo[3] }}</small></p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</body>
+</html>

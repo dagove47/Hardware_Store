@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Categoría</title>
+    <link rel="stylesheet" href="../../../static/css/admin/addcategory.css">
+    <script src="../../../static/js/admin/addcategory.js" defer></script> 
+</head>
+<body>
+    <div class="container-add-category">
+        <div class="left">
+            <form class="form-register" action="{{ url_for('editar_promociones', id_promocion=promocion[0]) }}" method="POST" autocomplete="off" enctype="multipart/form-data">
+                <div class="titulo">
+                    <h2>Editar Promocion</h2>
+                    <hr>
+                </div>
+                <input type="hidden" name="idPromocion" value="{{ promocion[0] }}">
+                <div class="form-group">
+                <input class="cate_input" type="text" name="Titulo" value="{{ promocion[1] }}" placeholder="Titulo" required>
+                </div>
+                <div class="form-group">
+                <input class="cate_input" type="text" name="Descripcion" value="{{ promocion[2] }}" placeholder="Descripcion" required>
+                </div>
+                <div class="form-group">
+                <input class="cate_input" type="text" name="Fecha" value="{{ promocion[3] }}" placeholder="Fecha" required>
+                </div>
+                <input class="fancy_file" type="file" id="File" name="archivo">
+                <label for="File">
+                    <span class="fancy_file_fancyfilebutton">Buscar archivo</span>
+                </label>
+                <button type="submit" id="enviar" class="form__submit">Guardar cambios</button>
+            </form>
+        </div> 
+        <div class="right">
+            <div class="file-dnd">
+            <!-- Mostrar la imagen actual de la categoría -->
+            <div class="before-upload" id="preview">
+            <img class="imgC" src="data:image/png;base64,{{ promocion[4] }}" alt="Imagen de la promocion">
+        </div>
+        <div class="after-upload">
+            <div class="clear-btn">&times;</div>
+            <img src=""/>
+        </div>
+    </div>
+    </div>
+    </div>
+</body>
+</html>
+

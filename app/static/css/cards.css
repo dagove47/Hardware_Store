@@ -1,0 +1,61 @@
+.blog-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px; /* Margen superior entre el hero y las tarjetas */
+    margin-bottom: 50px; /* Espacio entre las filas de tarjetas */
+}
+
+.blog-entry {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    margin-bottom: 20px; /* Espacio entre las tarjetas */
+    width: calc(33.33% - 20px); /* Ancho de cada tarjeta (33.33% para tres en una fila con espacio entre ellas) */
+}
+
+.blog-entry:hover {
+    transform: translateY(-5px);
+}
+
+.blog-entry img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #eee;
+    border-radius: 10px 10px 0 0; /* Bordes redondeados solo en la parte superior */
+}
+
+.blog-entry .text {
+    padding: 20px;
+}
+
+.blog-entry h6 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #e9b663; /* Color del título */
+}
+
+.blog-entry p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.blog-entry .card-text {
+    color: #999;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    .blog-entry {
+        width: calc(50% - 20px); /* Dos tarjetas en una fila en pantallas pequeñas */
+    }
+}
+
+@media (max-width: 576px) {
+    .blog-entry {
+        width: 100%; /* Una tarjeta en una fila en pantallas extra pequeñas */
+    }
+}
