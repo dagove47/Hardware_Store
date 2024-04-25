@@ -1,0 +1,79 @@
+/* Estilos para el cuerpo de la página */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Para que el contenido ocupe al menos toda la altura de la ventana */
+}
+
+/* Estilos para la sección del héroe (imagen de fondo) */
+.hero {
+    flex-grow: 1; /* Hace que la sección ocupe todo el espacio disponible */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url("https://orion91.com/blog/wp-content/uploads/2021/04/herramientas_bricolaje_orion91_1.jpg");
+    background-size: cover;
+    background-position: center;
+    color: #fff; /* Color de texto blanco para contrastar con la imagen de fondo */
+    padding: 50px; /* Espaciado interno */
+    text-align: center; /* Centrar el contenido */
+}
+
+nav {
+    background-color: #e9b663; /* Color de fondo del nav */
+}
+
+ul {
+    list-style-type: none; /* Elimina los puntos de la lista */
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    display: inline; /* Muestra los elementos de la lista en línea */
+}
+
+a {
+    display: inline-block;
+    padding: 10px 20px; /* Espaciado interno de los enlaces */
+    color: black; /* Color del texto de los enlaces */
+    text-decoration: none; /* Elimina el subrayado de los enlaces */
+}
+
+a:hover {
+    background-color: #f1bd68; /* Cambia el color de fondo al pasar el ratón sobre los enlaces */
+}
+
+/* Estilos para las tarjetas de subcategorías */
+.subcategories-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+}
+
+.card {
+    background-color: #e9b663;
+    width: 200px;
+    margin: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-content {
+    padding: 20px;
+    text-align: center;
+}
+
+.card-content h3 {
+    margin-top: 0;
+    font-size: 13px;
+}
+
+.main-title {
+    text-align: center;
+    margin-top: 40px; 
+}
+

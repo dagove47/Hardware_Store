@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subcategorías</title>
+    <link rel="stylesheet" href="../static/css/user-subcategory.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/home">Deposito Aurora</a></li>
+        </ul>
+    </nav>
+    <section class="hero">
+        <div class="hero-content">
+            <!-- Contenido de la sección de la imagen de fondo aquí -->
+        </div>
+    </section>
+
+    <h3 class="main-title">Subcategorías</h3>
+    
+    <!-- Contenedor para las tarjetas de subcategorías -->
+    <div class="subcategories-container">
+        {% for subcategoria in subcategorias %}
+        <div class="card">
+            <div class="card-content">
+                <h3>{{ subcategoria[1] }}</h3>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    </body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías</title>
+    <link rel="stylesheet" href="../static/css/categoriasmenu.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/home">Deposito Aurora</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <!-- Contenido de la sección de la imagen de fondo aquí -->
+        </div>
+    </section>
+
+    <div class="categories">
+        <div class="wrapper">
+            <h2 class="title">Categorías</h2>
+            <div class="content">
+                <div class="categories-container">
+                    {% for categoria in categorias %}
+                    <div class="category">
+                        <img src="data:image/png;base64,{{ categoria[2] }}" alt="">
+                        <h6>{{ categoria[1] }}</h6>
+                    </div>
+                    {% endfor %}
+                </div>
+             </div>
+        </div>
+    </div>
+</body>
+</html>

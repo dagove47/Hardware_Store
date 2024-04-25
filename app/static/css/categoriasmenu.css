@@ -1,0 +1,96 @@
+html, body {
+    height: 100%; /* Asegura que el tamaño del cuerpo sea al menos del 100% de la ventana gráfica */
+    margin: 0; /* Elimina el margen predeterminado del cuerpo */
+    padding: 0; /* Elimina el relleno predeterminado del cuerpo */
+}
+
+  
+.hero {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url("https://orion91.com/blog/wp-content/uploads/2021/04/herramientas_bricolaje_orion91_1.jpg");
+    background-size: cover; /* Ajusta la imagen para que cubra toda la sección */
+    background-position: center; /* Centra la imagen en la sección */
+    height: 300px; /* Altura de la sección del héroe */
+    color: white; /* Color del texto dentro de la sección del héroe */
+    text-align: center; /* Alineación del texto en el centro */
+    display: flex;
+    align-items: center; /* Centra verticalmente el contenido */
+    justify-content: center; /* Centra horizontalmente el contenido */
+}
+
+/* Estilos para el nav */
+nav {
+    background-color: #e9b663; /* Color de fondo del nav */
+}
+
+ul {
+    list-style-type: none; /* Elimina los puntos de la lista */
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    display: inline; /* Muestra los elementos de la lista en línea */
+}
+
+a {
+    display: inline-block;
+    padding: 10px 20px; /* Espaciado interno de los enlaces */
+    color: black; /* Color del texto de los enlaces */
+    text-decoration: none; /* Elimina el subrayado de los enlaces */
+}
+
+a:hover {
+    background-color: #f1bd68; /* Cambia el color de fondo al pasar el ratón sobre los enlaces */
+}
+
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra horizontalmente los elementos */
+    text-align: center; /* Alinea el texto del botón al centro */
+}
+
+.categories-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.category {
+    width: calc(33.33% - 10px); /* Ancho de cada categoría (33.33% para tres en una fila) */
+    margin-bottom: 20px;
+    text-align: center; /* Alinea el contenido de la categoría al centro */
+    margin-right: 10px;
+}
+
+.category img {
+    display: block; /* Asegura que la imagen sea un bloque */
+    margin: 0 auto; /* Centra horizontalmente la imagen */
+    border-radius: 50%;
+    width: 100px; /* ajusta el tamaño según tus necesidades */
+    height: 100px; /* ajusta el tamaño según tus necesidades */
+}
+
+.category h6 {
+    margin-top: 10px; /* Espaciado entre la imagen y el título */
+    color: #e9b663;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 70px;
+    margin-top: 50px;
+    color: #e9b663;
+}
+
+.show-all {
+    margin-top: 20px; /* Espacio entre las categorías y el botón */
+    background: #e9b663;
+    border: none;
+    padding: 5px 50px;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+
