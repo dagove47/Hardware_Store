@@ -663,121 +663,79 @@ def eliminar_empleado(Id_empleado):
 
 # ------------------ PEDIDOS ------------------
 
-# Función para obtener todos los pedidos
 @app.route('/pedidos')
-def obtener_pedidos():
+def pedidos():
     with get_db_connection() as conn:
         if conn:
             cursor = conn.cursor()
-            try:
-                cursor.callproc("Pedido_CRUD.ObtenerPedidos", [])
-                pedidos = cursor.fetchall()
-                cursor.close()
-                return render_template('pedidos.html', pedidos=pedidos)
-            except cx_Oracle.DatabaseError as e:
-                error, = e.args
-                flash(f'Error al obtener los pedidos: {error}', 'error')
+            cursor.execute("SELECT ID_Pedido, ID_Usuario, Fecha_Pedido, Metodo_Pago, Envio, Estado FROM Pedido")
+            pedidos = cursor.fetchall()
+            cursor.close()
+            return render_template('pedidos.html', pedidos=pedidos)
         else:
-            flash('Error: No se pudo conectar a la base de datos.', 'error')
             return "Error: No se pudo conectar a la base de datos."
 
-# Función para obtener todos los detalles de un pedido específico
-@app.route('/detalle_pedido/<int:id_pedido>')
-def obtener_detalle_pedido(id_pedido):
-    with get_db_connection() as conn:
-        if conn:
-            cursor = conn.cursor()
-            try:
-                cursor.callproc("Detalle_Pedido_CRUD.ObtenerDetallesPedido", [id_pedido])
-                detalles_pedido = cursor.fetchall()
-                cursor.close()
-                return render_template('detalles_pedidos.html', detalles=detalles_pedido)
-            except cx_Oracle.DatabaseError as e:
-                error, = e.args
-                flash(f'Error al obtener los detalles del pedido: {error}', 'error')
-        else:
-            flash('Error: No se pudo conectar a la base de datos.', 'error')
-            return "Error: No se pudo conectar a la base de datos."
-
-# Función para crear un nuevo pedido
 @app.route('/crear_pedido', methods=['POST'])
 def crear_pedido():
     if request.method == 'POST':
         data = request.form
-        id_pedido = data['ID_Pedido']
-        id_usuario = data['ID_Usuario']
-        metodo_pago = data['Metodo_Pago']
-        envio = data['Envio']
-        estado = data['Estado']
-        
         with get_db_connection() as conn:
             if conn:
                 cursor = conn.cursor()
                 try:
-                    cursor.callproc("Pedido_CRUD.InsertarPedido", [id_pedido, id_usuario, datetime.now().strftime('%Y-%m-%d'), metodo_pago, envio, estado])
+                    cursor.execute("INSERT INTO Pedido VALUES (:1, :2, :3, :4, :5, :6)",
+                                   (data['ID_Pedido'], data['ID_Usuario'], data['Fecha_Pedido'],
+                                    data['Metodo_Pago'], data['Envio'], data['Estado']))
                     conn.commit()
                     flash('Pedido creado exitosamente!', 'success')
-                    return redirect(url_for('obtener_pedidos'))  # <-- Redirect after successful creation
                 except cx_Oracle.DatabaseError as e:
                     error, = e.args
                     flash(f'Error al crear el pedido: {error}', 'error')
+                cursor.close()
             else:
                 flash('Error: No se pudo conectar a la base de datos.', 'error')
-    else:
-        flash('Error: Método de solicitud no permitido.', 'error')
-    
-    return redirect(url_for('index'))  # <-- Redirect if not a POST request or encountered an error
+        return redirect(url_for('pedidos'))
 
-# Función para eliminar un pedido
-@app.route('/eliminar_pedido/<int:id_pedido>', methods=['POST'])
-def eliminar_pedido(id_pedido):
-    with get_db_connection() as conn:
-        if conn:
-            cursor = conn.cursor()
-            try:
-                cursor.callproc("Pedido_CRUD.EliminarPedido", [id_pedido])
-                conn.commit()
-                flash('Pedido eliminado exitosamente!', 'success')
-            except cx_Oracle.DatabaseError as e:
-                error, = e.args
-                flash(f'Error al eliminar el pedido: {error}', 'error')
-            cursor.close()
-        else:
-            flash('Error: No se pudo conectar a la base de datos.', 'error')
-    return redirect(url_for('obtener_pedidos'))
-
-# Función para editar un pedido
 @app.route('/editar_pedido/<int:id_pedido>', methods=['GET', 'POST'])
 def editar_pedido(id_pedido):
     with get_db_connection() as conn:
         if conn:
             cursor = conn.cursor()
+            cursor.execute("SELECT * FROM Pedido WHERE ID_Pedido = :1", (id_pedido,))
+            pedido = cursor.fetchone()
+            cursor.close()
             if request.method == 'POST':
                 data = request.form
-                id_usuario = data['ID_Usuario']
-                metodo_pago = data['Metodo_Pago']
-                envio = data['Envio']
-                estado = data['Estado']
-                
+                cursor = conn.cursor()
                 try:
-                    cursor.callproc("Pedido_CRUD.ActualizarEstadoPedido", [id_pedido, estado])
+                    cursor.execute("UPDATE Pedido SET ID_Usuario = :1, Fecha_Pedido = :2, Metodo_Pago = :3, Envio = :4, Estado = :5 WHERE ID_Pedido = :6",
+                                   (data['ID_Usuario'], data['Fecha_Pedido'], data['Metodo_Pago'], data['Envio'], data['Estado'], id_pedido))
                     conn.commit()
                     flash('Pedido editado exitosamente!', 'success')
                 except cx_Oracle.DatabaseError as e:
                     error, = e.args
                     flash(f'Error al editar el pedido: {error}', 'error')
                 cursor.close()
-                return redirect(url_for('obtener_pedidos'))
-            else:
-                cursor.execute("SELECT * FROM Pedido WHERE ID_Pedido = :id_pedido", {'id_pedido': id_pedido})
-                pedido = cursor.fetchone()
-                cursor.close()
-                if pedido:
-                    return render_template('editar_pedido.html', pedido=pedido)
-                else:
-                    flash('Pedido no encontrado.', 'error')
-                    return redirect(url_for('obtener_pedidos'))
+                return redirect(url_for('pedidos'))
+            return render_template('editar_pedido.html', pedido=pedido)
         else:
             flash('Error: No se pudo conectar a la base de datos.', 'error')
-            return redirect(url_for('obtener_pedidos'))
+            return redirect(url_for('pedidos'))
+
+@app.route('/eliminar_pedido/<int:id_pedido>', methods=['POST'])
+def eliminar_pedido(id_pedido):
+    with get_db_connection() as conn:
+        if conn:
+            try:
+                cursor = conn.cursor()
+                cursor.execute("DELETE FROM Pedido WHERE ID_Pedido = :1", (id_pedido,))
+                conn.commit()
+                cursor.close()
+                flash('Pedido eliminado exitosamente!', 'success')
+            except cx_Oracle.DatabaseError as e:
+                error, = e.args
+                flash(f'Error al eliminar el pedido: {error}', 'error')
+        else:
+            flash('Error: No se pudo conectar a la base de datos.', 'error')
+    return redirect(url_for('pedidos'))
 
