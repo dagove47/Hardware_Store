@@ -8,6 +8,23 @@
 </head>
 <body>
     <h1>CRUD de Pedidos</h1>
+    <h2>Agregar Pedido</h2>
+    <form action="/insertar_pedido" method="POST">
+        <label for="id_pedido">ID Pedido:</label>
+        <input type="text" id="id_pedido" name="ID_Pedido" required><br><br>
+        <label for="id_usuario">ID Usuario:</label>
+        <input type="text" id="id_usuario" name="ID_Usuario" required><br><br>
+        <label for="fecha_pedido">Fecha Pedido:</label>
+        <input type="date" id="fecha_pedido" name="Fecha_Pedido" required><br><br>
+        <label for="metodo_pago">Método de Pago:</label>
+        <input type="text" id="metodo_pago" name="Metodo_Pago" required><br><br>
+        <label for="envio">Envío:</label>
+        <input type="text" id="envio" name="Envio" required><br><br>
+        <label for="estado">Estado:</label>
+        <input type="text" id="estado" name="Estado" required><br><br>
+        <input type="submit" value="Agregar Pedido">
+    </form>
+    <h2>Listado de Pedidos</h2>
     <table border="1">
         <thead>
             <tr>

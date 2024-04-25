@@ -8,6 +8,23 @@
 </head>
 <body>
     <h1>CRUD de Detalles de Pedidos</h1>
+    <h2>Agregar Detalle de Pedido</h2>
+    <form action="/crear_detalle_pedido" method="POST">
+        <label for="id_detalle">ID Detalle:</label>
+        <input type="text" id="id_detalle" name="ID_Detalle" required><br><br>
+        <label for="id_pedido">ID Pedido:</label>
+        <input type="text" id="id_pedido" name="ID_Pedido" required><br><br>
+        <label for="id_producto">ID Producto:</label>
+        <input type="text" id="id_producto" name="ID_Producto" required><br><br>
+        <label for="cantidad">Cantidad:</label>
+        <input type="text" id="cantidad" name="Cantidad" required><br><br>
+        <label for="precio_unidad">Precio Unidad:</label>
+        <input type="text" id="precio_unidad" name="Precio_Unidad" required><br><br>
+        <label for="subtotal">Subtotal:</label>
+        <input type="text" id="subtotal" name="Subtotal" required><br><br>
+        <input type="submit" value="Agregar Detalle">
+    </form>
+    <h2>Listado de Detalles de Pedidos</h2>
     <table border="1">
         <thead>
             <tr>
