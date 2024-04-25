@@ -90,7 +90,10 @@
                 <td>
                     <!-- Add links/buttons for editing and deleting each detalle de pedido -->
                     <a href="{{ url_for('editar_detalle_pedido', id_detalle=detalle[0]) }}">Editar</a>
-                    <a href="{{ url_for('eliminar_detalle_pedido', id_detalle=detalle[0]) }}">Eliminar</a>
+                    <form action="{{ url_for('eliminar_detalle_pedido', id_detalle=detalle[0]) }}" method="POST">
+                        <!-- Aquí van los campos del formulario -->
+                        <button type="submit">Eliminar</button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
