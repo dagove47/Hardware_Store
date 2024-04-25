@@ -57,3 +57,12 @@ nav:hover{
     width: 200px;
     transition:  all 0.5s ease;
 }
+
+nav ul li a {
+    color: black; /* Cambia el color del texto dentro de los enlaces */
+    text-decoration: none; /* Elimina el subrayado de los enlaces */
+}
+
+nav ul li a i {
+    color: black; /* Cambia el color de los iconos dentro de los enlaces */
+}
