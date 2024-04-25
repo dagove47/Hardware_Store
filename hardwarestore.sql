@@ -421,83 +421,96 @@ CREATE TABLE Detalle_Pedido (
     FOREIGN KEY (ID_PRODUCTO) REFERENCES productos(ID_PRODUCTO)
 );
 
-
--- Procedure to insert a new pedido
-CREATE OR REPLACE PROCEDURE InsertarPedido(
+-- Crear un pedido
+CREATE OR REPLACE PROCEDURE CrearPedido(
     p_ID_Pedido IN NUMBER,
     p_ID_Usuario IN VARCHAR2,
     p_Fecha_Pedido IN DATE,
     p_Metodo_Pago IN VARCHAR2,
     p_Envio IN VARCHAR2,
     p_Estado IN VARCHAR2
-) AS
+)
+IS
 BEGIN
     INSERT INTO Pedido (ID_Pedido, ID_Usuario, Fecha_Pedido, Metodo_Pago, Envio, Estado)
     VALUES (p_ID_Pedido, p_ID_Usuario, p_Fecha_Pedido, p_Metodo_Pago, p_Envio, p_Estado);
     COMMIT;
-END InsertarPedido;
+END CrearPedido;
 
--- Function to obtain all pedidos
-CREATE OR REPLACE FUNCTION ObtenerPedidos RETURN SYS_REFCURSOR AS
-    pedidos_cursor SYS_REFCURSOR;
+-- Leer un pedido
+CREATE OR REPLACE FUNCTION ObtenerPedido(
+    p_ID_Pedido IN NUMBER
+)
+RETURN SYS_REFCURSOR
+IS
+    v_cursor SYS_REFCURSOR;
 BEGIN
-    OPEN pedidos_cursor FOR
-    SELECT ID_Pedido, ID_Usuario, Fecha_Pedido, Metodo_Pago, Envio, Estado
-    FROM Pedido;
-    RETURN pedidos_cursor;
-END ObtenerPedidos;
+    OPEN v_cursor FOR
+    SELECT * FROM Pedido WHERE ID_Pedido = p_ID_Pedido;
+    RETURN v_cursor;
+END ObtenerPedido;
 
--- Procedure to update the estado of a pedido
-CREATE OR REPLACE PROCEDURE ActualizarEstadoPedido(
+-- Actualizar un pedido
+CREATE OR REPLACE PROCEDURE ActualizarPedido(
     p_ID_Pedido IN NUMBER,
-    p_NuevoEstado IN VARCHAR2
-) AS
+    p_ID_Usuario IN VARCHAR2,
+    p_Fecha_Pedido IN DATE,
+    p_Metodo_Pago IN VARCHAR2,
+    p_Envio IN VARCHAR2,
+    p_Estado IN VARCHAR2
+)
+IS
 BEGIN
-    UPDATE Pedido SET Estado = p_NuevoEstado WHERE ID_Pedido = p_ID_Pedido;
+    UPDATE Pedido
+    SET ID_Usuario = p_ID_Usuario,
+        Fecha_Pedido = p_Fecha_Pedido,
+        Metodo_Pago = p_Metodo_Pago,
+        Envio = p_Envio,
+        Estado = p_Estado
+    WHERE ID_Pedido = p_ID_Pedido;
     COMMIT;
-END ActualizarEstadoPedido;
+END ActualizarPedido;
 
--- Procedure to delete a pedido
+-- Eliminar un pedido
 CREATE OR REPLACE PROCEDURE EliminarPedido(
     p_ID_Pedido IN NUMBER
-) AS
+)
+IS
 BEGIN
     DELETE FROM Pedido WHERE ID_Pedido = p_ID_Pedido;
     COMMIT;
 END EliminarPedido;
 
-
--- DETALLE PEDIDOS
-
--- Procedure to insert a new detalle de pedido
-CREATE OR REPLACE PROCEDURE InsertarDetallePedido(
+-- Crear un detalle de pedido
+CREATE OR REPLACE PROCEDURE CrearDetallePedido(
     p_ID_Detalle IN NUMBER,
     p_ID_Pedido IN NUMBER,
     p_ID_Producto IN NUMBER,
     p_Cantidad IN NUMBER,
     p_Precio_Unidad IN NUMBER,
     p_Subtotal IN NUMBER
-) AS
+)
+IS
 BEGIN
     INSERT INTO Detalle_Pedido (ID_Detalle, ID_Pedido, ID_Producto, Cantidad, Precio_Unidad, Subtotal)
     VALUES (p_ID_Detalle, p_ID_Pedido, p_ID_Producto, p_Cantidad, p_Precio_Unidad, p_Subtotal);
     COMMIT;
-END InsertarDetallePedido;
+END CrearDetallePedido;
 
--- Function to obtain all detalles de pedido of a specific pedido
-CREATE OR REPLACE FUNCTION ObtenerDetallesPedido(
-    p_ID_Pedido IN NUMBER
-) RETURN SYS_REFCURSOR AS
-    detalles_cursor SYS_REFCURSOR;
+-- Leer un detalle de pedido
+CREATE OR REPLACE FUNCTION ObtenerDetallePedido(
+    p_ID_Detalle IN NUMBER
+)
+RETURN SYS_REFCURSOR
+IS
+    v_cursor SYS_REFCURSOR;
 BEGIN
-    OPEN detalles_cursor FOR
-    SELECT ID_Detalle, ID_Pedido, ID_Producto, Cantidad, Precio_Unidad, Subtotal
-    FROM Detalle_Pedido
-    WHERE ID_Pedido = p_ID_Pedido;
-    RETURN detalles_cursor;
-END ObtenerDetallesPedido;
+    OPEN v_cursor FOR
+    SELECT * FROM Detalle_Pedido WHERE ID_Detalle = p_ID_Detalle;
+    RETURN v_cursor;
+END ObtenerDetallePedido;
 
--- Procedure to update a detalle de pedido
+-- Actualizar un detalle de pedido
 CREATE OR REPLACE PROCEDURE ActualizarDetallePedido(
     p_ID_Detalle IN NUMBER,
     p_ID_Pedido IN NUMBER,
@@ -505,7 +518,8 @@ CREATE OR REPLACE PROCEDURE ActualizarDetallePedido(
     p_Cantidad IN NUMBER,
     p_Precio_Unidad IN NUMBER,
     p_Subtotal IN NUMBER
-) AS
+)
+IS
 BEGIN
     UPDATE Detalle_Pedido
     SET ID_Pedido = p_ID_Pedido,
@@ -517,12 +531,12 @@ BEGIN
     COMMIT;
 END ActualizarDetallePedido;
 
--- Procedure to delete a detalle de pedido
+-- Eliminar un detalle de pedido
 CREATE OR REPLACE PROCEDURE EliminarDetallePedido(
     p_ID_Detalle IN NUMBER
-) AS
+)
+IS
 BEGIN
     DELETE FROM Detalle_Pedido WHERE ID_Detalle = p_ID_Detalle;
     COMMIT;
-END EliminarDetallePedido;
-
+END Eliminar

@@ -661,79 +661,104 @@ def eliminar_empleado(Id_empleado):
 
 # ------------------ PEDIDOS ------------------
 
+# CRUD operations for Pedidos
 @app.route('/pedidos')
-def pedidos():
-    with get_db_connection() as conn:
-        if conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT ID_Pedido, ID_Usuario, Fecha_Pedido, Metodo_Pago, Envio, Estado FROM Pedido")
-            pedidos = cursor.fetchall()
-            cursor.close()
-            return render_template('pedidos.html', pedidos=pedidos)
-        else:
-            return "Error: No se pudo conectar a la base de datos."
+def index():
+    with get_connection() as connection, get_cursor(connection) as cursor:
+        cursor.execute("SELECT * FROM Pedido")
+        pedidos = cursor.fetchall()
+    return render_template('pedidos.html', pedidos=pedidos)
 
 @app.route('/crear_pedido', methods=['POST'])
 def crear_pedido():
     if request.method == 'POST':
-        data = request.form
-        with get_db_connection() as conn:
-            if conn:
-                cursor = conn.cursor()
-                try:
-                    cursor.execute("INSERT INTO Pedido VALUES (:1, :2, :3, :4, :5, :6)",
-                                   (data['ID_Pedido'], data['ID_Usuario'], data['Fecha_Pedido'],
-                                    data['Metodo_Pago'], data['Envio'], data['Estado']))
-                    conn.commit()
-                    flash('Pedido creado exitosamente!', 'success')
-                except cx_Oracle.DatabaseError as e:
-                    error, = e.args
-                    flash(f'Error al crear el pedido: {error}', 'error')
-                cursor.close()
-            else:
-                flash('Error: No se pudo conectar a la base de datos.', 'error')
-        return redirect(url_for('pedidos'))
+        id_pedido = request.form['ID_Pedido']
+        id_usuario = request.form['ID_Usuario']
+        fecha_pedido = request.form['Fecha_Pedido']
+        metodo_pago = request.form['Metodo_Pago']
+        envio = request.form['Envio']
+        estado = request.form['Estado']
+        with get_connection() as connection, get_cursor(connection) as cursor:
+            cursor.execute("INSERT INTO Pedido VALUES (:1, :2, :3, :4, :5, :6)", (id_pedido, id_usuario, fecha_pedido, metodo_pago, envio, estado))
+            connection.commit()
+    return redirect(url_for('index'))
 
 @app.route('/editar_pedido/<int:id_pedido>', methods=['GET', 'POST'])
 def editar_pedido(id_pedido):
-    with get_db_connection() as conn:
-        if conn:
-            cursor = conn.cursor()
+    if request.method == 'GET':
+        with get_connection() as connection, get_cursor(connection) as cursor:
             cursor.execute("SELECT * FROM Pedido WHERE ID_Pedido = :1", (id_pedido,))
             pedido = cursor.fetchone()
-            cursor.close()
-            if request.method == 'POST':
-                data = request.form
-                cursor = conn.cursor()
-                try:
-                    cursor.execute("UPDATE Pedido SET ID_Usuario = :1, Fecha_Pedido = :2, Metodo_Pago = :3, Envio = :4, Estado = :5 WHERE ID_Pedido = :6",
-                                   (data['ID_Usuario'], data['Fecha_Pedido'], data['Metodo_Pago'], data['Envio'], data['Estado'], id_pedido))
-                    conn.commit()
-                    flash('Pedido editado exitosamente!', 'success')
-                except cx_Oracle.DatabaseError as e:
-                    error, = e.args
-                    flash(f'Error al editar el pedido: {error}', 'error')
-                cursor.close()
-                return redirect(url_for('pedidos'))
-            return render_template('editar_pedido.html', pedido=pedido)
-        else:
-            flash('Error: No se pudo conectar a la base de datos.', 'error')
-            return redirect(url_for('pedidos'))
+        return render_template('editar_pedido.html', pedido=pedido)
+    elif request.method == 'POST':
+        id_usuario = request.form['ID_Usuario']
+        fecha_pedido = request.form['Fecha_Pedido']
+        metodo_pago = request.form['Metodo_Pago']
+        envio = request.form['Envio']
+        estado = request.form['Estado']
+        with get_connection() as connection, get_cursor(connection) as cursor:
+            cursor.execute("UPDATE Pedido SET ID_Usuario = :1, Fecha_Pedido = :2, Metodo_Pago = :3, Envio = :4, Estado = :5 WHERE ID_Pedido = :6",
+                           (id_usuario, fecha_pedido, metodo_pago, envio, estado, id_pedido))
+            connection.commit()
+        return redirect(url_for('index'))
 
 @app.route('/eliminar_pedido/<int:id_pedido>', methods=['POST'])
 def eliminar_pedido(id_pedido):
-    with get_db_connection() as conn:
-        if conn:
-            try:
-                cursor = conn.cursor()
-                cursor.execute("DELETE FROM Pedido WHERE ID_Pedido = :1", (id_pedido,))
-                conn.commit()
-                cursor.close()
-                flash('Pedido eliminado exitosamente!', 'success')
-            except cx_Oracle.DatabaseError as e:
-                error, = e.args
-                flash(f'Error al eliminar el pedido: {error}', 'error')
-        else:
-            flash('Error: No se pudo conectar a la base de datos.', 'error')
-    return redirect(url_for('pedidos'))
+    with get_connection() as connection, get_cursor(connection) as cursor:
+        cursor.execute("DELETE FROM Pedido WHERE ID_Pedido = :1", (id_pedido,))
+        connection.commit()
+    return redirect(url_for('index'))
 
+# CRUD operations for Detalles de Pedidos
+@app.route('/detalles_pedidos')
+def detalles_pedidos():
+    with get_connection() as connection, get_cursor(connection) as cursor:
+        cursor.execute("SELECT * FROM Detalle_Pedido")
+        detalles = cursor.fetchall()
+    return render_template('detalles_pedidos.html', detalles=detalles)
+
+@app.route('/crear_detalle_pedido', methods=['POST'])
+def crear_detalle_pedido():
+    if request.method == 'POST':
+        id_detalle = request.form['ID_Detalle']
+        id_pedido = request.form['ID_Pedido']
+        id_producto = request.form['ID_Producto']
+        cantidad = request.form['Cantidad']
+        precio_unidad = request.form['Precio_Unidad']
+        subtotal = request.form['Subtotal']
+        with get_connection() as connection, get_cursor(connection) as cursor:
+            cursor.execute("INSERT INTO Detalle_Pedido VALUES (:1, :2, :3, :4, :5, :6)",
+                           (id_detalle, id_pedido, id_producto, cantidad, precio_unidad, subtotal))
+            connection.commit()
+    return redirect(url_for('detalles_pedidos'))
+
+@app.route('/editar_detalle_pedido/<int:id_detalle>', methods=['GET', 'POST'])
+def editar_detalle_pedido(id_detalle):
+    if request.method == 'GET':
+        with get_connection() as connection, get_cursor(connection) as cursor:
+            cursor.execute("SELECT * FROM Detalle_Pedido WHERE ID_Detalle = :1", (id_detalle,))
+            detalle = cursor.fetchone()
+        return render_template('editar_detalle_pedido.html', detalle=detalle)
+    elif request.method == 'POST':
+        id_pedido = request.form['ID_Pedido']
+        id_producto = request.form['ID_Producto']
+        cantidad = request.form['Cantidad']
+        precio_unidad = request.form['Precio_Unidad']
+        subtotal = request.form['Subtotal']
+        with get_connection() as connection, get_cursor(connection) as cursor:
+            cursor.execute("UPDATE Detalle_Pedido SET ID_Pedido = :1, ID_Producto = :2, Cantidad = :3, Precio_Unidad = :4, Subtotal = :5 WHERE ID_Detalle = :6",
+                           (id_pedido, id_producto, cantidad, precio_unidad, subtotal, id_detalle))
+            connection.commit()
+        return redirect(url_for('detalles_pedidos'))
+
+@app.route('/eliminar_detalle_pedido/<int:id_detalle>', methods=['POST'])
+def eliminar_detalle_pedido(id_detalle):
+    with get_connection() as connection, get_cursor(connection) as cursor:
+        cursor.execute("DELETE FROM Detalle_Pedido WHERE ID_Detalle = :1", (id_detalle,))
+        connection.commit()
+    return redirect(url_for('detalles_pedidos'))
+
+# Error handling
+@app.errorhandler(404)
+def page_not_found(error):
+    return "404 - Page not found", 404
