@@ -634,7 +634,7 @@ def obtener_detalle_pedido(id_pedido):
             cursor.execute("SELECT * FROM Detalle_Pedido WHERE ID_Pedido = :id_pedido", {'id_pedido': id_pedido})
             detalles_pedido = cursor.fetchall()
             cursor.close()
-            return render_template('detalle_pedido.html', detalles_pedido=detalles_pedido)
+            return render_template('detalles_pedidos.html', detalles=detalles_pedido)
         else:
             return "Error: No se pudo conectar a la base de datos."
 
@@ -717,19 +717,19 @@ def eliminar_pedido(id_pedido):
     return redirect(url_for('obtener_pedidos'))
 
 # Función para editar un pedido
-@app.route('/editar_pedido/<int:id_pedido>', methods=['POST'])
+@app.route('/editar_pedido/<int:id_pedido>', methods=['GET', 'POST'])
 def editar_pedido(id_pedido):
-    if request.method == 'POST':
-        data = request.form
-        id_usuario = data['ID_Usuario']
-        fecha_pedido = data['Fecha_Pedido']
-        metodo_pago = data['Metodo_Pago']
-        envio = data['Envio']
-        estado = data['Estado']
-        
-        with get_db_connection() as conn:
-            if conn:
-                cursor = conn.cursor()
+    with get_db_connection() as conn:
+        if conn:
+            cursor = conn.cursor()
+            if request.method == 'POST':
+                data = request.form
+                id_usuario = data['ID_Usuario']
+                fecha_pedido = data['Fecha_Pedido']
+                metodo_pago = data['Metodo_Pago']
+                envio = data['Envio']
+                estado = data['Estado']
+                
                 try:
                     cursor.execute("UPDATE Pedido SET ID_Usuario = :id_usuario, Fecha_Pedido = :fecha_pedido, Metodo_Pago = :metodo_pago, Envio = :envio, Estado = :estado WHERE ID_Pedido = :id_pedido",
                                    {'id_usuario': id_usuario, 'fecha_pedido': fecha_pedido, 'metodo_pago': metodo_pago, 'envio': envio, 'estado': estado, 'id_pedido': id_pedido})
@@ -739,9 +739,17 @@ def editar_pedido(id_pedido):
                     error, = e.args
                     flash(f'Error al editar el pedido: {error}', 'error')
                 cursor.close()
+                return redirect(url_for('obtener_pedidos'))
             else:
-                flash('Error: No se pudo conectar a la base de datos.', 'error')
-        return redirect(url_for('obtener_pedidos'))
-    else:
-        return redirect(url_for('index'))
+                cursor.execute("SELECT * FROM Pedido WHERE ID_Pedido = :id_pedido", {'id_pedido': id_pedido})
+                pedido = cursor.fetchone()
+                cursor.close()
+                if pedido:
+                    return render_template('editar_pedido.html', pedido=pedido)
+                else:
+                    flash('Pedido no encontrado.', 'error')
+                    return redirect(url_for('obtener_pedidos'))
+        else:
+            flash('Error: No se pudo conectar a la base de datos.', 'error')
+            return redirect(url_for('obtener_pedidos'))
 

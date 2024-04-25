@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Pedido</title>
+</head>
+<body>
+    <h1>Editar Pedido</h1>
+    <form action="/editar_pedido/{{ pedido[0] }}" method="POST">
+        <label for="id_usuario">ID Usuario:</label>
+        <input type="text" id="id_usuario" name="ID_Usuario" value="{{ pedido[1] }}" required><br><br>
+        <label for="fecha_pedido">Fecha Pedido:</label>
+        <input type="date" id="fecha_pedido" name="Fecha_Pedido" value="{{ pedido[2] }}" required><br><br>
+        <label for="metodo_pago">Método de Pago:</label>
+        <input type="text" id="metodo_pago" name="Metodo_Pago" value="{{ pedido[3] }}" required><br><br>
+        <label for="envio">Envío:</label>
+        <input type="text" id="envio" name="Envio" value="{{ pedido[4] }}" required><br><br>
+        <label for="estado">Estado:</label>
+        <input type="text" id="estado" name="Estado" value="{{ pedido[5] }}" required><br><br>
+        <input type="submit" value="Guardar Cambios">
+    </form>
+</body>
+</html>
