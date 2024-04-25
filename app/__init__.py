@@ -146,8 +146,7 @@ def Acategorias():
 
             cursor.close()
             return redirect(url_for('obtener_categorias'))
-            
-        return render_template('/Admin/AddCategory.html')
+    return render_template('/Admin/AddCategory.html')
 
 
 # ------   SUBCATEGORIAS   ------
