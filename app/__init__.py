@@ -618,7 +618,7 @@ def obtener_pedidos():
     with get_db_connection() as conn:
         if conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM Pedido")
+            cursor.execute("BEGIN OPEN :result_cursor FOR SELECT * FROM TABLE(ObtenerPedidos); END;", result_cursor=cursor._newest_cursor())
             pedidos = cursor.fetchall()
             cursor.close()
             return render_template('pedidos.html', pedidos=pedidos)
@@ -631,7 +631,7 @@ def obtener_detalle_pedido(id_pedido):
     with get_db_connection() as conn:
         if conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM Detalle_Pedido WHERE ID_Pedido = :id_pedido", {'id_pedido': id_pedido})
+            cursor.execute("BEGIN OPEN :result_cursor FOR SELECT * FROM TABLE(ObtenerDetallesPedido(:id_pedido)); END;", result_cursor=cursor._newest_cursor(), id_pedido=id_pedido)
             detalles_pedido = cursor.fetchall()
             cursor.close()
             return render_template('detalles_pedidos.html', detalles=detalles_pedido)
@@ -645,7 +645,6 @@ def crear_pedido():
         data = request.form
         id_pedido = data['ID_Pedido']
         id_usuario = data['ID_Usuario']
-        fecha_pedido = datetime.now().strftime('%Y-%m-%d')
         metodo_pago = data['Metodo_Pago']
         envio = data['Envio']
         estado = data['Estado']
@@ -654,8 +653,7 @@ def crear_pedido():
             if conn:
                 cursor = conn.cursor()
                 try:
-                    cursor.execute("INSERT INTO Pedido (ID_Pedido, ID_Usuario, Fecha_Pedido, Metodo_Pago, Envio, Estado) VALUES (:id_pedido, :id_usuario, :fecha_pedido, :metodo_pago, :envio, :estado)",
-                                   {'id_pedido': id_pedido, 'id_usuario': id_usuario, 'fecha_pedido': fecha_pedido, 'metodo_pago': metodo_pago, 'envio': envio, 'estado': estado})
+                    cursor.callproc("InsertarPedido", (id_pedido, id_usuario, datetime.now().strftime('%Y-%m-%d'), metodo_pago, envio, estado))
                     conn.commit()
                     flash('Pedido creado exitosamente!', 'success')
                     return redirect(url_for('obtener_pedidos'))  # <-- Redirect after successful creation
@@ -669,36 +667,6 @@ def crear_pedido():
     
     return redirect(url_for('index'))  # <-- Redirect if not a POST request or encountered an error
 
-# Función para crear un nuevo detalle de pedido
-@app.route('/crear_detalle_pedido', methods=['POST'])
-def crear_detalle_pedido():
-    if request.method == 'POST':
-        data = request.form
-        id_detalle = data['ID_Detalle']
-        id_pedido = data['ID_Pedido']
-        id_producto = data['ID_Producto']
-        cantidad = data['Cantidad']
-        precio_unidad = data['Precio_Unidad']
-        subtotal = data['Subtotal']
-        
-        with get_db_connection() as conn:
-            if conn:
-                cursor = conn.cursor()
-                try:
-                    cursor.execute("INSERT INTO Detalle_Pedido (ID_Detalle, ID_Pedido, ID_Producto, Cantidad, Precio_Unidad, Subtotal) VALUES (:id_detalle, :id_pedido, :id_producto, :cantidad, :precio_unidad, :subtotal)",
-                                   {'id_detalle': id_detalle, 'id_pedido': id_pedido, 'id_producto': id_producto, 'cantidad': cantidad, 'precio_unidad': precio_unidad, 'subtotal': subtotal})
-                    conn.commit()
-                    flash('Detalle de pedido creado exitosamente!', 'success')
-                except cx_Oracle.DatabaseError as e:
-                    error, = e.args
-                    flash(f'Error al crear el detalle de pedido: {error}', 'error')
-                cursor.close()
-            else:
-                flash('Error: No se pudo conectar a la base de datos.', 'error')
-        return redirect(url_for('obtener_detalle_pedido', id_pedido=id_pedido))
-    else:
-        return redirect(url_for('index'))
-
 # Función para eliminar un pedido
 @app.route('/eliminar_pedido/<int:id_pedido>', methods=['POST'])
 def eliminar_pedido(id_pedido):
@@ -706,7 +674,7 @@ def eliminar_pedido(id_pedido):
         if conn:
             cursor = conn.cursor()
             try:
-                cursor.execute("DELETE FROM Pedido WHERE ID_Pedido = :id_pedido", {'id_pedido': id_pedido})
+                cursor.callproc("EliminarPedido", (id_pedido,))
                 conn.commit()
                 flash('Pedido eliminado exitosamente!', 'success')
             except cx_Oracle.DatabaseError as e:
@@ -726,14 +694,12 @@ def editar_pedido(id_pedido):
             if request.method == 'POST':
                 data = request.form
                 id_usuario = data['ID_Usuario']
-                fecha_pedido = data['Fecha_Pedido']
                 metodo_pago = data['Metodo_Pago']
                 envio = data['Envio']
                 estado = data['Estado']
                 
                 try:
-                    cursor.execute("UPDATE Pedido SET ID_Usuario = :id_usuario, Fecha_Pedido = :fecha_pedido, Metodo_Pago = :metodo_pago, Envio = :envio, Estado = :estado WHERE ID_Pedido = :id_pedido",
-                                   {'id_usuario': id_usuario, 'fecha_pedido': fecha_pedido, 'metodo_pago': metodo_pago, 'envio': envio, 'estado': estado, 'id_pedido': id_pedido})
+                    cursor.callproc("ActualizarEstadoPedido", (id_pedido, estado))
                     conn.commit()
                     flash('Pedido editado exitosamente!', 'success')
                 except cx_Oracle.DatabaseError as e:
