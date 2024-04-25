@@ -658,15 +658,16 @@ def crear_pedido():
                                    {'id_pedido': id_pedido, 'id_usuario': id_usuario, 'fecha_pedido': fecha_pedido, 'metodo_pago': metodo_pago, 'envio': envio, 'estado': estado})
                     conn.commit()
                     flash('Pedido creado exitosamente!', 'success')
+                    return redirect(url_for('obtener_pedidos'))  # <-- Redirect after successful creation
                 except cx_Oracle.DatabaseError as e:
                     error, = e.args
                     flash(f'Error al crear el pedido: {error}', 'error')
-                cursor.close()
             else:
                 flash('Error: No se pudo conectar a la base de datos.', 'error')
-        return redirect(url_for('obtener_pedidos'))
     else:
-        return redirect(url_for('index'))
+        flash('Error: Método de solicitud no permitido.', 'error')
+    
+    return redirect(url_for('index'))  # <-- Redirect if not a POST request or encountered an error
 
 # Función para crear un nuevo detalle de pedido
 @app.route('/crear_detalle_pedido', methods=['POST'])
