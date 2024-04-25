@@ -110,19 +110,23 @@ def eliminarCategoria(id_categoria):
 def editarCategoria(id_categoria):
     with get_db_connection() as connection:
         cursor = connection.cursor()
-    if request.method == 'POST':
-        # Obtener datos del formulario
-        nombreCategoria = request.form['nombreCategoria']
-        archivo = request.files['archivo'].read()
 
-        # Llamar al procedimiento PL/SQL para editar la categoría
-        cursor.callproc('editar_categoria', [id_categoria, nombreCategoria, archivo])
-        return redirect(url_for('obtener_categorias'))
-    cursor.execute("SELECT nombre, archivo FROM categorias WHERE id_categoria = :id", {"id": id_categoria})
-    categoria = cursor.fetchone()
-    categoria_con_base64 = (id_categoria, categoria[0], base64.b64encode(categoria[1].read()).decode('utf-8'))
-    cursor.close()
+        if request.method == 'POST':
+            # Obtener datos del formulario
+            nombreCategoria = request.form['nombreCategoria']
+            archivo = request.files['archivo'].read()
+
+            # Llamar al procedimiento PL/SQL para editar la categoría
+            cursor.callproc('editar_categoria', [id_categoria, nombreCategoria, archivo])
+            return redirect(url_for('obtener_categorias'))
+
+        cursor.execute("SELECT nombre, archivo FROM categorias WHERE id_categoria = :id", {"id": id_categoria})
+        categoria = cursor.fetchone()
+        categoria_con_base64 = (id_categoria, categoria[0], base64.b64encode(categoria[1].read()).decode('utf-8'))
+        cursor.close()
+
     return render_template('/admin/EditCategory.html', categoria=categoria_con_base64)
+
 
 
 #Formulario Categoria
