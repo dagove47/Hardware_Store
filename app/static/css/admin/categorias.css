@@ -107,3 +107,9 @@ tbody tr td .icons{
     color: #797979;
 }
 
+.table_header .fa-home {
+    margin-right: 10px; /* Ajusta el margen derecho del ícono de inicio */
+    color: black;
+}
+
+
