@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Detalle de Pedido</title>
+</head>
+<body>
+    <h1>Editar Detalle de Pedido</h1>
+    <form action="{{ url_for('editar_detalle_pedido', id_detalle=detalle[0]) }}" method="POST">
+        <label for="ID_Pedido">ID del Pedido:</label>
+        <input type="text" id="ID_Pedido" name="ID_Pedido" value="{{ detalle[1] }}" required><br><br>
+
+        <label for="ID_Producto">ID del Producto:</label>
+        <input type="text" id="ID_Producto" name="ID_Producto" value="{{ detalle[2] }}" required><br><br>
+
+        <label for="Cantidad">Cantidad:</label>
+        <input type="text" id="Cantidad" name="Cantidad" value="{{ detalle[3] }}" required><br><br>
+
+        <label for="Precio_Unidad">Precio Unitario:</label>
+        <input type="text" id="Precio_Unidad" name="Precio_Unidad" value="{{ detalle[4] }}" required><br><br>
+
+        <label for="Subtotal">Subtotal:</label>
+        <input type="text" id="Subtotal" name="Subtotal" value="{{ detalle[5] }}" required><br><br>
+
+        <input type="submit" value="Guardar Cambios">
+    </form>
+</body>
+</html>
