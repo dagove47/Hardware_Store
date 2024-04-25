@@ -395,3 +395,106 @@ BEGIN
     COMMIT;
 END;
 /
+
+
+------------------------ PEDIDOS ---------------------
+CREATE TABLE Pedido (
+    ID_Pedido NUMBER PRIMARY KEY,
+    ID_Usuario VARCHAR2(100),
+    Fecha_Pedido DATE,
+    Metodo_Pago VARCHAR2(50),
+    Envio VARCHAR2(50),
+    Estado VARCHAR2(50),
+    FOREIGN KEY (ID_Usuario) REFERENCES Usuarios(ID_Usuario)
+);
+
+-- Paquete para el CRUD de Pedido
+CREATE OR REPLACE PACKAGE Pedido_CRUD AS
+    -- Procedimiento para insertar un nuevo pedido
+    PROCEDURE InsertarPedido(
+        p_ID_Pedido IN NUMBER,
+        p_ID_Usuario IN VARCHAR2,
+        p_Fecha_Pedido IN DATE,
+        p_Metodo_Pago IN VARCHAR2,
+        p_Envio IN VARCHAR2,
+        p_Estado IN VARCHAR2
+    );
+
+    -- Función para obtener todos los pedidos
+    FUNCTION ObtenerPedidos RETURN SYS_REFCURSOR;
+
+    -- Procedimiento para actualizar el estado de un pedido
+    PROCEDURE ActualizarEstadoPedido(
+        p_ID_Pedido IN NUMBER,
+        p_NuevoEstado IN VARCHAR2
+    );
+
+    -- Procedimiento para eliminar un pedido
+    PROCEDURE EliminarPedido(
+        p_ID_Pedido IN NUMBER
+    );
+END Pedido_CRUD;
+/
+
+-- Cuerpo del paquete para el CRUD de Pedido
+CREATE OR REPLACE PACKAGE BODY Pedido_CRUD AS
+    -- Procedimiento para insertar un nuevo pedido
+    PROCEDURE InsertarPedido(
+        p_ID_Pedido IN NUMBER,
+        p_ID_Usuario IN VARCHAR2,
+        p_Fecha_Pedido IN DATE,
+        p_Metodo_Pago IN VARCHAR2,
+        p_Envio IN VARCHAR2,
+        p_Estado IN VARCHAR2
+    ) AS
+    BEGIN
+        INSERT INTO Pedido (ID_Pedido, ID_Usuario, Fecha_Pedido, Metodo_Pago, Envio, Estado)
+        VALUES (p_ID_Pedido, p_ID_Usuario, p_Fecha_Pedido, p_Metodo_Pago, p_Envio, p_Estado);
+        COMMIT;
+    END InsertarPedido;
+
+    -- Función para obtener todos los pedidos
+    FUNCTION ObtenerPedidos RETURN SYS_REFCURSOR AS
+        pedidos_cursor SYS_REFCURSOR;
+    BEGIN
+        OPEN pedidos_cursor FOR
+        SELECT ID_Pedido, ID_Usuario, Fecha_Pedido, Metodo_Pago, Envio, Estado
+        FROM Pedido;
+        RETURN pedidos_cursor;
+    END ObtenerPedidos;
+
+    -- Procedimiento para actualizar el estado de un pedido
+    PROCEDURE ActualizarEstadoPedido(
+        p_ID_Pedido IN NUMBER,
+        p_NuevoEstado IN VARCHAR2
+    ) AS
+    BEGIN
+        UPDATE Pedido SET Estado = p_NuevoEstado WHERE ID_Pedido = p_ID_Pedido;
+        COMMIT;
+    END ActualizarEstadoPedido;
+
+    -- Procedimiento para eliminar un pedido
+    PROCEDURE EliminarPedido(
+        p_ID_Pedido IN NUMBER
+    ) AS
+    BEGIN
+        DELETE FROM Pedido WHERE ID_Pedido = p_ID_Pedido;
+        COMMIT;
+    END EliminarPedido;
+END Pedido_CRUD;
+/
+
+
+------------------------ DETALLE PEDIDOS ---------------------
+CREATE TABLE Detalle_Pedido (
+    ID_Detalle NUMBER PRIMARY KEY,
+    ID_Pedido NUMBER,
+    ID_PRODUCTO NUMBER,
+    Cantidad NUMBER,
+    Precio_Unidad NUMBER,
+    Subtotal NUMBER,
+    FOREIGN KEY (ID_Pedido) REFERENCES Pedido(ID_Pedido),
+    FOREIGN KEY (ID_PRODUCTO) REFERENCES productos(ID_PRODUCTO)
+);
+
+
