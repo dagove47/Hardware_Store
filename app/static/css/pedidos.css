@@ -1,8 +1,21 @@
 /* Estilos generales */
 body {
+    min-height: 100vh;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 16px;
+}
+
+.bodyPedido {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url("https://images.pexels.com/photos/957090/workshop-rustic-hammer-wrench-957090.jpeg?auto=compress&cs=tinysrgb&w=1200");
+}
+
+.bodyDetalle {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url("https://images.pexels.com/photos/8335679/pexels-photo-8335679.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
 }
 
 .container {
@@ -60,7 +73,7 @@ th, td {
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: #000;
 }
 
 tr:nth-child(even) {
