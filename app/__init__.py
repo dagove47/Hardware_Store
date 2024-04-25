@@ -117,15 +117,10 @@ def editarCategoria(id_categoria):
 
         # Llamar al procedimiento PL/SQL para editar la categoría
         cursor.callproc('editar_categoria', [id_categoria, nombreCategoria, archivo])
-
-        cursor.close()
         return redirect(url_for('obtener_categorias'))
-    
-    # Obtener la información de la categoría para mostrarla en el formulario de edición
     cursor.execute("SELECT nombre, archivo FROM categorias WHERE id_categoria = :id", {"id": id_categoria})
     categoria = cursor.fetchone()
     categoria_con_base64 = (id_categoria, categoria[0], base64.b64encode(categoria[1].read()).decode('utf-8'))
-    
     cursor.close()
     return render_template('/admin/EditCategory.html', categoria=categoria_con_base64)
 
