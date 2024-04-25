@@ -465,9 +465,9 @@ def borrar_resena(id_resena):
 
 
 
-@app.route('/empleados')
-def empleados():
-    return render_template('empleados.html')
+#@app.route('/empleados')
+#def empleados():
+ #   return render_template('empleados.html')
 
 # LOGIN
 @app.route('/login', methods=['GET', 'POST'])
@@ -488,7 +488,7 @@ def login():
 
                 # Condicional rol
                 if session['id_rol'] == 1:
-                    return redirect(url_for('empleados'))
+                    return redirect(url_for('listar_empleados'))
                 elif session['id_rol'] == 2:
                     return redirect(url_for('home'))
 
