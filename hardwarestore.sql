@@ -497,4 +497,98 @@ CREATE TABLE Detalle_Pedido (
     FOREIGN KEY (ID_PRODUCTO) REFERENCES productos(ID_PRODUCTO)
 );
 
+-- Paquete para el CRUD de Detalle_Pedido
+CREATE OR REPLACE PACKAGE Detalle_Pedido_CRUD AS
+    -- Procedimiento para insertar un nuevo detalle de pedido
+    PROCEDURE InsertarDetallePedido(
+        p_ID_Detalle IN NUMBER,
+        p_ID_Pedido IN NUMBER,
+        p_ID_Producto IN NUMBER,
+        p_Cantidad IN NUMBER,
+        p_Precio_Unidad IN NUMBER,
+        p_Subtotal IN NUMBER
+    );
+
+    -- Función para obtener todos los detalles de pedido de un pedido específico
+    FUNCTION ObtenerDetallesPedido(
+        p_ID_Pedido IN NUMBER
+    ) RETURN SYS_REFCURSOR;
+
+    -- Procedimiento para actualizar un detalle de pedido
+    PROCEDURE ActualizarDetallePedido(
+        p_ID_Detalle IN NUMBER,
+        p_ID_Pedido IN NUMBER,
+        p_ID_Producto IN NUMBER,
+        p_Cantidad IN NUMBER,
+        p_Precio_Unidad IN NUMBER,
+        p_Subtotal IN NUMBER
+    );
+
+    -- Procedimiento para eliminar un detalle de pedido
+    PROCEDURE EliminarDetallePedido(
+        p_ID_Detalle IN NUMBER
+    );
+END Detalle_Pedido_CRUD;
+/
+
+-- Cuerpo del paquete para el CRUD de Detalle_Pedido
+CREATE OR REPLACE PACKAGE BODY Detalle_Pedido_CRUD AS
+    -- Procedimiento para insertar un nuevo detalle de pedido
+    PROCEDURE InsertarDetallePedido(
+        p_ID_Detalle IN NUMBER,
+        p_ID_Pedido IN NUMBER,
+        p_ID_Producto IN NUMBER,
+        p_Cantidad IN NUMBER,
+        p_Precio_Unidad IN NUMBER,
+        p_Subtotal IN NUMBER
+    ) AS
+    BEGIN
+        INSERT INTO Detalle_Pedido (ID_Detalle, ID_Pedido, ID_Producto, Cantidad, Precio_Unidad, Subtotal)
+        VALUES (p_ID_Detalle, p_ID_Pedido, p_ID_Producto, p_Cantidad, p_Precio_Unidad, p_Subtotal);
+        COMMIT;
+    END InsertarDetallePedido;
+
+    -- Función para obtener todos los detalles de pedido de un pedido específico
+    FUNCTION ObtenerDetallesPedido(
+        p_ID_Pedido IN NUMBER
+    ) RETURN SYS_REFCURSOR AS
+        detalles_cursor SYS_REFCURSOR;
+    BEGIN
+        OPEN detalles_cursor FOR
+        SELECT ID_Detalle, ID_Pedido, ID_Producto, Cantidad, Precio_Unidad, Subtotal
+        FROM Detalle_Pedido
+        WHERE ID_Pedido = p_ID_Pedido;
+        RETURN detalles_cursor;
+    END ObtenerDetallesPedido;
+
+    -- Procedimiento para actualizar un detalle de pedido
+    PROCEDURE ActualizarDetallePedido(
+        p_ID_Detalle IN NUMBER,
+        p_ID_Pedido IN NUMBER,
+        p_ID_Producto IN NUMBER,
+        p_Cantidad IN NUMBER,
+        p_Precio_Unidad IN NUMBER,
+        p_Subtotal IN NUMBER
+    ) AS
+    BEGIN
+        UPDATE Detalle_Pedido
+        SET ID_Pedido = p_ID_Pedido,
+            ID_Producto = p_ID_Producto,
+            Cantidad = p_Cantidad,
+            Precio_Unidad = p_Precio_Unidad,
+            Subtotal = p_Subtotal
+        WHERE ID_Detalle = p_ID_Detalle;
+        COMMIT;
+    END ActualizarDetallePedido;
+
+    -- Procedimiento para eliminar un detalle de pedido
+    PROCEDURE EliminarDetallePedido(
+        p_ID_Detalle IN NUMBER
+    ) AS
+    BEGIN
+        DELETE FROM Detalle_Pedido WHERE ID_Detalle = p_ID_Detalle;
+        COMMIT;
+    END EliminarDetallePedido;
+END Detalle_Pedido_CRUD;
+/
 

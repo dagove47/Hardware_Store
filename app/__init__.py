@@ -608,3 +608,140 @@ def eliminar_empleado(Id_empleado):
         connection.commit()
         cursor.close()
     return redirect(url_for('listar_empleados'))
+
+
+# ------------------ PEDIDOS ------------------
+
+# Función para obtener todos los pedidos
+@app.route('/pedidos')
+def obtener_pedidos():
+    conn, cursor = get_db_connection()
+    if cursor:
+        cursor.execute("SELECT * FROM Pedido")
+        pedidos = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return render_template('pedidos.html', pedidos=pedidos)
+    else:
+        return "Error: No se pudo conectar a la base de datos."
+
+# Función para obtener todos los detalles de un pedido específico
+@app.route('/detalle_pedido/<int:id_pedido>')
+def obtener_detalle_pedido(id_pedido):
+    conn, cursor = get_db_connection()
+    if cursor:
+        cursor.execute("SELECT * FROM Detalle_Pedido WHERE ID_Pedido = :id_pedido", {'id_pedido': id_pedido})
+        detalles_pedido = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return render_template('detalle_pedido.html', detalles_pedido=detalles_pedido)
+    else:
+        return "Error: No se pudo conectar a la base de datos."
+
+# Función para crear un nuevo pedido
+@app.route('/crear_pedido', methods=['POST'])
+def crear_pedido():
+    if request.method == 'POST':
+        data = request.form
+        id_pedido = data['ID_Pedido']
+        id_usuario = data['ID_Usuario']
+        fecha_pedido = datetime.now().strftime('%Y-%m-%d')
+        metodo_pago = data['Metodo_Pago']
+        envio = data['Envio']
+        estado = data['Estado']
+        
+        conn, cursor = get_db_connection()
+        if cursor:
+            try:
+                cursor.execute("INSERT INTO Pedido (ID_Pedido, ID_Usuario, Fecha_Pedido, Metodo_Pago, Envio, Estado) VALUES (:id_pedido, :id_usuario, :fecha_pedido, :metodo_pago, :envio, :estado)",
+                               {'id_pedido': id_pedido, 'id_usuario': id_usuario, 'fecha_pedido': fecha_pedido, 'metodo_pago': metodo_pago, 'envio': envio, 'estado': estado})
+                conn.commit()
+                cursor.close()
+                conn.close()
+                flash('Pedido creado exitosamente!', 'success')
+            except cx_Oracle.DatabaseError as e:
+                error, = e.args
+                flash(f'Error al crear el pedido: {error}', 'error')
+        else:
+            flash('Error: No se pudo conectar a la base de datos.', 'error')
+        return redirect(url_for('obtener_pedidos'))
+    else:
+        return redirect(url_for('index'))
+
+# Función para crear un nuevo detalle de pedido
+@app.route('/crear_detalle_pedido', methods=['POST'])
+def crear_detalle_pedido():
+    if request.method == 'POST':
+        data = request.form
+        id_detalle = data['ID_Detalle']
+        id_pedido = data['ID_Pedido']
+        id_producto = data['ID_Producto']
+        cantidad = data['Cantidad']
+        precio_unidad = data['Precio_Unidad']
+        subtotal = data['Subtotal']
+        
+        conn, cursor = get_db_connection()
+        if cursor:
+            try:
+                cursor.execute("INSERT INTO Detalle_Pedido (ID_Detalle, ID_Pedido, ID_Producto, Cantidad, Precio_Unidad, Subtotal) VALUES (:id_detalle, :id_pedido, :id_producto, :cantidad, :precio_unidad, :subtotal)",
+                               {'id_detalle': id_detalle, 'id_pedido': id_pedido, 'id_producto': id_producto, 'cantidad': cantidad, 'precio_unidad': precio_unidad, 'subtotal': subtotal})
+                conn.commit()
+                cursor.close()
+                conn.close()
+                flash('Detalle de pedido creado exitosamente!', 'success')
+            except cx_Oracle.DatabaseError as e:
+                error, = e.args
+                flash(f'Error al crear el detalle de pedido: {error}', 'error')
+        else:
+            flash('Error: No se pudo conectar a la base de datos.', 'error')
+        return redirect(url_for('obtener_detalle_pedido', id_pedido=id_pedido))
+    else:
+        return redirect(url_for('index'))
+    
+# Función para eliminar un pedido
+@app.route('/eliminar_pedido/<int:id_pedido>', methods=['POST'])
+def eliminar_pedido(id_pedido):
+    conn, cursor = get_db_connection()
+    if cursor:
+        try:
+            cursor.execute("DELETE FROM Pedido WHERE ID_Pedido = :id_pedido", {'id_pedido': id_pedido})
+            conn.commit()
+            cursor.close()
+            conn.close()
+            flash('Pedido eliminado exitosamente!', 'success')
+        except cx_Oracle.DatabaseError as e:
+            error, = e.args
+            flash(f'Error al eliminar el pedido: {error}', 'error')
+    else:
+        flash('Error: No se pudo conectar a la base de datos.', 'error')
+    return redirect(url_for('obtener_pedidos'))
+
+# Función para editar un pedido
+@app.route('/editar_pedido/<int:id_pedido>', methods=['POST'])
+def editar_pedido(id_pedido):
+    if request.method == 'POST':
+        data = request.form
+        id_usuario = data['ID_Usuario']
+        fecha_pedido = data['Fecha_Pedido']
+        metodo_pago = data['Metodo_Pago']
+        envio = data['Envio']
+        estado = data['Estado']
+        
+        conn, cursor = get_db_connection()
+        if cursor:
+            try:
+                cursor.execute("UPDATE Pedido SET ID_Usuario = :id_usuario, Fecha_Pedido = :fecha_pedido, Metodo_Pago = :metodo_pago, Envio = :envio, Estado = :estado WHERE ID_Pedido = :id_pedido",
+                               {'id_usuario': id_usuario, 'fecha_pedido': fecha_pedido, 'metodo_pago': metodo_pago, 'envio': envio, 'estado': estado, 'id_pedido': id_pedido})
+                conn.commit()
+                cursor.close()
+                conn.close()
+                flash('Pedido editado exitosamente!', 'success')
+            except cx_Oracle.DatabaseError as e:
+                error, = e.args
+                flash(f'Error al editar el pedido: {error}', 'error')
+        else:
+            flash('Error: No se pudo conectar a la base de datos.', 'error')
+        return redirect(url_for('obtener_pedidos'))
+    else:
+        return redirect(url_for('index'))
+

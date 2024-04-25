@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD de Pedidos</title>
+    <link rel="stylesheet" href="../static/css/pedidos.css">
+</head>
+<body>
+    <h1>CRUD de Pedidos</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID Pedido</th>
+                <th>ID Usuario</th>
+                <th>Fecha Pedido</th>
+                <th>Método de Pago</th>
+                <th>Envío</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pedido in pedidos %}
+            <tr>
+                <td>{{ pedido[0] }}</td>
+                <td>{{ pedido[1] }}</td>
+                <td>{{ pedido[2] }}</td>
+                <td>{{ pedido[3] }}</td>
+                <td>{{ pedido[4] }}</td>
+                <td>{{ pedido[5] }}</td>
+                <td>
+                    <a href="#">Editar</a>
+                    <a href="#">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
