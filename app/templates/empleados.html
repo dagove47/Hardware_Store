@@ -7,75 +7,92 @@
     <title>CRUD de Empleados</title>
     <link rel="stylesheet" href="../static/css/empleados.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../../static/css/admin/categorias.css">
+    <script src="../../static/js/admin/addcategory.js" defer></script>
+    
 </head>
 
 <body>
-    <div class="container mt-5 formBox">
-        <h1 class="mb-4">Gestión de empleados</h1>
-        <form class="formEmpleado" action="/crear_empleado" method="POST" class="mb-4">
-            <div class="col w-100">
-                <div class=" inputBox">
-                    <input type="number" name="Id_empleado" placeholder="Identificación" class="form-control mb-2"
-                        required>
-                </div>
-                <div class=" inputBox">
-                    <input type="text" name="Nombre_empleado" placeholder="Nombre del empleado"
-                        class="form-control mb-2" required>
-                </div>
-                <div class=" inputBox">
-                    <input type="text" name="Apellido_empleado" placeholder="Apellido del empleado"
-                        class="form-control mb-2" required>
-                </div>
-
-                <div class="inputBox">
-                    <input type="text" name="CargoEmpleado" placeholder="Puesto de trabajo" class="form-control mb-2"
-                        required>
-                </div>
-                <div class="inputBox">
-                    <input type="text" name="Departamento" placeholder="Departamento de trabajo"
-                        class="form-control mb-2" required>
-                </div>
-                <div class="inputBox">
-                    <input type="text" name="Salario" placeholder="Salario del empleado" class="form-control mb-2"
-                        required>
-                </div>
-                    <button type="submit" class="btn btn-primary submitBtn">Guardar empleado</button>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <a href="/menu" class="btn btn-primary mb-3">
+                    <i class="fa fa-home"></i> Volver al Menú
+                </a>
+                <h1 class="mb-4">Gestión de empleados</h1>
             </div>
-            
-        </form>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Identificación</th>
-                    <th>Nombre del empleado</th>
-                    <th>Apellido del empleado</th>
-                    <th>Cargo del empleado</th>
-                    <th>Departamento del empleado</th>
-                    <th>Salario del empleado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for empleado in empleados %}
-                <tr>
-                    <td>{{ empleado[0] }}</td>
-                    <td>{{ empleado[1] }}</td>
-                    <td>{{ empleado[2] }}</td>
-                    <td>{{ empleado[3] }}</td>
-                    <td>{{ empleado[4] }}</td>
-                    <td>{{ empleado[5] }}</td>
-                    <td>
-                        <form action="{{ url_for('eliminar_empleado', Id_empleado=empleado[0]) }}" method="POST">
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                        </form>
-                        <button type="button" class="btn btn-primary"
-                            onclick='showEditEmployeeModal({{ empleado | tojson | safe }})'>Actualizar</button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <form class="formEmpleado mb-4" action="/crear_empleado" method="POST">
+                    <div class="col w-100">
+                        <div class="inputBox">
+                            <input type="number" name="Id_empleado" placeholder="Identificación" class="form-control mb-2"
+                                required>
+                        </div>
+                        <div class="inputBox">
+                            <input type="text" name="Nombre_empleado" placeholder="Nombre del empleado"
+                                class="form-control mb-2" required>
+                        </div>
+                        <div class="inputBox">
+                            <input type="text" name="Apellido_empleado" placeholder="Apellido del empleado"
+                                class="form-control mb-2" required>
+                        </div>
+                        <div class="inputBox">
+                            <input type="text" name="CargoEmpleado" placeholder="Puesto de trabajo" class="form-control mb-2"
+                                required>
+                        </div>
+                        <div class="inputBox">
+                            <input type="text" name="Departamento" placeholder="Departamento de trabajo"
+                                class="form-control mb-2" required>
+                        </div>
+                        <div class="inputBox">
+                            <input type="text" name="Salario" placeholder="Salario del empleado" class="form-control mb-2"
+                                required>
+                        </div>
+                        <button type="submit" class="btn btn-primary submitBtn">Guardar empleado</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" style="max-height: 200px; max-width: auto; overflow-y: auto;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Identificación</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Cargo</th>
+                            <th>Departamento</th>
+                            <th>Salario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for empleado in empleados %}
+                        <tr>
+                            <td>{{ empleado[0] }}</td>
+                            <td>{{ empleado[1] }}</td>
+                            <td>{{ empleado[2] }}</td>
+                            <td>{{ empleado[3] }}</td>
+                            <td>{{ empleado[4] }}</td>
+                            <td>{{ empleado[5] }}</td>
+                            <td>
+                                <form action="{{ url_for('eliminar_empleado', Id_empleado=empleado[0]) }}" method="POST">
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                </form>
+                                <button type="button" class="btn btn-primary"
+                                    onclick='showEditEmployeeModal({{ empleado | tojson | safe }})'>Actualizar</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- Modal para editar empleado -->
@@ -119,7 +136,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary" form="updateForm">Guardar Cambios</button>
+                    <button type="submit" class="btn btn-primary" form="updateForm">Guardar cambios</button>
                 </div>
             </div>
         </div>
@@ -127,12 +144,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Función para mostrar el modal de edición
         function showEditEmployeeModal(empleado) {
             // Configurar la acción del formulario con la URL correcta
             var updateForm = document.querySelector('#updateForm');
             updateForm.action = '/actualizar_empleado/' + empleado[0];
 
-            // Configurar los valores de los campos
+            // Configurar los valores de los campos del modal
             document.querySelector('#modalNombre').value = empleado[1];
             document.querySelector('#modalApellido').value = empleado[2];
             document.querySelector('#modalCargoEmpleado').value = empleado[3];
@@ -148,7 +166,6 @@
             editModal.show();
         }
     </script>
-
 </body>
 
 </html>

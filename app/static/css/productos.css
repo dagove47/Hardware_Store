@@ -1,9 +1,9 @@
-body {
+/* body {
     background-image: url('https://img.freepik.com/foto-gratis/grandes-pilas-de-grava-y-arena-para-la-construccion_28989-551.jpg?size=664&ext=jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    color: #ffffff; /* Color de texto blanco para que sea legible en el fondo */
+    color: #ffffff; 
     font-family: Arial, sans-serif;
     font-size: 20px;
 }
@@ -13,7 +13,7 @@ body {
 }
 
 .table {
-    background-color: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente para hacer que la tabla sea legible */
+    background-color: rgba(255, 255, 255, 0.8); 
 }
 
 .form-group {
@@ -28,4 +28,4 @@ body {
 .btn-primary:hover {
     background-color: #0056b3;
     border-color: #0056b3;
-}
+} */
