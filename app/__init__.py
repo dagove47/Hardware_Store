@@ -664,7 +664,8 @@ def eliminar_empleado(Id_empleado):
 # CRUD operations for Pedidos
 @app.route('/pedidos')
 def index():
-    with get_connection() as connection, get_cursor(connection) as cursor:
+    with get_db_connection() as connection:
+        cursor = connection.cursor()
         cursor.execute("SELECT * FROM Pedido")
         pedidos = cursor.fetchall()
     return render_template('pedidos.html', pedidos=pedidos)
@@ -678,15 +679,16 @@ def crear_pedido():
         metodo_pago = request.form['Metodo_Pago']
         envio = request.form['Envio']
         estado = request.form['Estado']
-        with get_connection() as connection, get_cursor(connection) as cursor:
+        with get_db_connection() as connection, get_db_cursor(connection) as cursor:
             cursor.execute("INSERT INTO Pedido VALUES (:1, :2, :3, :4, :5, :6)", (id_pedido, id_usuario, fecha_pedido, metodo_pago, envio, estado))
             connection.commit()
-    return redirect(url_for('index'))
+    return redirect(url_for('pedidos'))
 
 @app.route('/editar_pedido/<int:id_pedido>', methods=['GET', 'POST'])
 def editar_pedido(id_pedido):
     if request.method == 'GET':
-        with get_connection() as connection, get_cursor(connection) as cursor:
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
             cursor.execute("SELECT * FROM Pedido WHERE ID_Pedido = :1", (id_pedido,))
             pedido = cursor.fetchone()
         return render_template('editar_pedido.html', pedido=pedido)
@@ -696,7 +698,8 @@ def editar_pedido(id_pedido):
         metodo_pago = request.form['Metodo_Pago']
         envio = request.form['Envio']
         estado = request.form['Estado']
-        with get_connection() as connection, get_cursor(connection) as cursor:
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
             cursor.execute("UPDATE Pedido SET ID_Usuario = :1, Fecha_Pedido = :2, Metodo_Pago = :3, Envio = :4, Estado = :5 WHERE ID_Pedido = :6",
                            (id_usuario, fecha_pedido, metodo_pago, envio, estado, id_pedido))
             connection.commit()
@@ -704,7 +707,8 @@ def editar_pedido(id_pedido):
 
 @app.route('/eliminar_pedido/<int:id_pedido>', methods=['POST'])
 def eliminar_pedido(id_pedido):
-    with get_connection() as connection, get_cursor(connection) as cursor:
+    with get_db_connection() as connection:
+        cursor = connection.cursor()
         cursor.execute("DELETE FROM Pedido WHERE ID_Pedido = :1", (id_pedido,))
         connection.commit()
     return redirect(url_for('index'))
@@ -712,7 +716,8 @@ def eliminar_pedido(id_pedido):
 # CRUD operations for Detalles de Pedidos
 @app.route('/detalles_pedidos')
 def detalles_pedidos():
-    with get_connection() as connection, get_cursor(connection) as cursor:
+    with get_db_connection() as connection:
+        cursor = connection.cursor()
         cursor.execute("SELECT * FROM Detalle_Pedido")
         detalles = cursor.fetchall()
     return render_template('detalles_pedidos.html', detalles=detalles)
@@ -726,7 +731,8 @@ def crear_detalle_pedido():
         cantidad = request.form['Cantidad']
         precio_unidad = request.form['Precio_Unidad']
         subtotal = request.form['Subtotal']
-        with get_connection() as connection, get_cursor(connection) as cursor:
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
             cursor.execute("INSERT INTO Detalle_Pedido VALUES (:1, :2, :3, :4, :5, :6)",
                            (id_detalle, id_pedido, id_producto, cantidad, precio_unidad, subtotal))
             connection.commit()
@@ -735,7 +741,8 @@ def crear_detalle_pedido():
 @app.route('/editar_detalle_pedido/<int:id_detalle>', methods=['GET', 'POST'])
 def editar_detalle_pedido(id_detalle):
     if request.method == 'GET':
-        with get_connection() as connection, get_cursor(connection) as cursor:
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
             cursor.execute("SELECT * FROM Detalle_Pedido WHERE ID_Detalle = :1", (id_detalle,))
             detalle = cursor.fetchone()
         return render_template('editar_detalle_pedido.html', detalle=detalle)
@@ -745,7 +752,8 @@ def editar_detalle_pedido(id_detalle):
         cantidad = request.form['Cantidad']
         precio_unidad = request.form['Precio_Unidad']
         subtotal = request.form['Subtotal']
-        with get_connection() as connection, get_cursor(connection) as cursor:
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
             cursor.execute("UPDATE Detalle_Pedido SET ID_Pedido = :1, ID_Producto = :2, Cantidad = :3, Precio_Unidad = :4, Subtotal = :5 WHERE ID_Detalle = :6",
                            (id_pedido, id_producto, cantidad, precio_unidad, subtotal, id_detalle))
             connection.commit()
@@ -753,7 +761,8 @@ def editar_detalle_pedido(id_detalle):
 
 @app.route('/eliminar_detalle_pedido/<int:id_detalle>', methods=['POST'])
 def eliminar_detalle_pedido(id_detalle):
-    with get_connection() as connection, get_cursor(connection) as cursor:
+    with get_db_connection() as connection:
+        cursor = connection.cursor()
         cursor.execute("DELETE FROM Detalle_Pedido WHERE ID_Detalle = :1", (id_detalle,))
         connection.commit()
     return redirect(url_for('detalles_pedidos'))
