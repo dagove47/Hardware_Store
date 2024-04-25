@@ -663,7 +663,7 @@ def eliminar_empleado(Id_empleado):
 
 # CRUD operations for Pedidos
 @app.route('/pedidos')
-def index():
+def pedidos():
     with get_db_connection() as connection:
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM Pedido")
@@ -703,7 +703,7 @@ def editar_pedido(id_pedido):
             cursor.execute("UPDATE Pedido SET ID_Usuario = :1, Fecha_Pedido = :2, Metodo_Pago = :3, Envio = :4, Estado = :5 WHERE ID_Pedido = :6",
                            (id_usuario, fecha_pedido, metodo_pago, envio, estado, id_pedido))
             connection.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('pedidos'))
 
 @app.route('/eliminar_pedido/<int:id_pedido>', methods=['POST'])
 def eliminar_pedido(id_pedido):
@@ -711,7 +711,7 @@ def eliminar_pedido(id_pedido):
         cursor = connection.cursor()
         cursor.execute("DELETE FROM Pedido WHERE ID_Pedido = :1", (id_pedido,))
         connection.commit()
-    return redirect(url_for('index'))
+    return redirect(url_for('pedidos'))
 
 # CRUD operations for Detalles de Pedidos
 @app.route('/detalles_pedidos')

@@ -539,4 +539,4 @@ IS
 BEGIN
     DELETE FROM Detalle_Pedido WHERE ID_Detalle = p_ID_Detalle;
     COMMIT;
-END Eliminar
+END EliminarDetallePedido
