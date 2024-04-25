@@ -618,11 +618,16 @@ def obtener_pedidos():
     with get_db_connection() as conn:
         if conn:
             cursor = conn.cursor()
-            cursor.execute("BEGIN OPEN :result_cursor FOR SELECT * FROM TABLE(ObtenerPedidos); END;", result_cursor=cursor._newest_cursor())
-            pedidos = cursor.fetchall()
-            cursor.close()
-            return render_template('pedidos.html', pedidos=pedidos)
+            try:
+                cursor.callproc("Pedido_CRUD.ObtenerPedidos", [])
+                pedidos = cursor.fetchall()
+                cursor.close()
+                return render_template('pedidos.html', pedidos=pedidos)
+            except cx_Oracle.DatabaseError as e:
+                error, = e.args
+                flash(f'Error al obtener los pedidos: {error}', 'error')
         else:
+            flash('Error: No se pudo conectar a la base de datos.', 'error')
             return "Error: No se pudo conectar a la base de datos."
 
 # Función para obtener todos los detalles de un pedido específico
@@ -631,11 +636,16 @@ def obtener_detalle_pedido(id_pedido):
     with get_db_connection() as conn:
         if conn:
             cursor = conn.cursor()
-            cursor.execute("BEGIN OPEN :result_cursor FOR SELECT * FROM TABLE(ObtenerDetallesPedido(:id_pedido)); END;", result_cursor=cursor._newest_cursor(), id_pedido=id_pedido)
-            detalles_pedido = cursor.fetchall()
-            cursor.close()
-            return render_template('detalles_pedidos.html', detalles=detalles_pedido)
+            try:
+                cursor.callproc("Detalle_Pedido_CRUD.ObtenerDetallesPedido", [id_pedido])
+                detalles_pedido = cursor.fetchall()
+                cursor.close()
+                return render_template('detalles_pedidos.html', detalles=detalles_pedido)
+            except cx_Oracle.DatabaseError as e:
+                error, = e.args
+                flash(f'Error al obtener los detalles del pedido: {error}', 'error')
         else:
+            flash('Error: No se pudo conectar a la base de datos.', 'error')
             return "Error: No se pudo conectar a la base de datos."
 
 # Función para crear un nuevo pedido
@@ -653,7 +663,7 @@ def crear_pedido():
             if conn:
                 cursor = conn.cursor()
                 try:
-                    cursor.callproc("InsertarPedido", (id_pedido, id_usuario, datetime.now().strftime('%Y-%m-%d'), metodo_pago, envio, estado))
+                    cursor.callproc("Pedido_CRUD.InsertarPedido", [id_pedido, id_usuario, datetime.now().strftime('%Y-%m-%d'), metodo_pago, envio, estado])
                     conn.commit()
                     flash('Pedido creado exitosamente!', 'success')
                     return redirect(url_for('obtener_pedidos'))  # <-- Redirect after successful creation
@@ -674,7 +684,7 @@ def eliminar_pedido(id_pedido):
         if conn:
             cursor = conn.cursor()
             try:
-                cursor.callproc("EliminarPedido", (id_pedido,))
+                cursor.callproc("Pedido_CRUD.EliminarPedido", [id_pedido])
                 conn.commit()
                 flash('Pedido eliminado exitosamente!', 'success')
             except cx_Oracle.DatabaseError as e:
@@ -699,7 +709,7 @@ def editar_pedido(id_pedido):
                 estado = data['Estado']
                 
                 try:
-                    cursor.callproc("ActualizarEstadoPedido", (id_pedido, estado))
+                    cursor.callproc("Pedido_CRUD.ActualizarEstadoPedido", [id_pedido, estado])
                     conn.commit()
                     flash('Pedido editado exitosamente!', 'success')
                 except cx_Oracle.DatabaseError as e:
