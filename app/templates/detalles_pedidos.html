@@ -48,8 +48,8 @@
                 <td>{{ detalle[5] }}</td>
                 <td>
                     <!-- Add links/buttons for editing and deleting each detalle de pedido -->
-                    <a href="#">Editar</a>
-                    <a href="#">Eliminar</a>
+                    <a href="{{ url_for('editar_detalle_pedido', id_detalle=detalle[0]) }}">Editar</a>
+                    <a href="{{ url_for('eliminar_detalle_pedido', id_detalle=detalle[0]) }}">Eliminar</a>
                 </td>
             </tr>
             {% endfor %}

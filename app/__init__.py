@@ -537,7 +537,7 @@ def login():
 
                 # Condicional rol
                 if session['id_rol'] == 1:
-                    return redirect(url_for('listar_empleados'))
+                    return redirect(url_for('menu'))
                 elif session['id_rol'] == 2:
                     return redirect(url_for('home'))
 
@@ -679,8 +679,9 @@ def crear_pedido():
         metodo_pago = request.form['Metodo_Pago']
         envio = request.form['Envio']
         estado = request.form['Estado']
-        with get_db_connection() as connection, get_db_cursor(connection) as cursor:
-            cursor.execute("INSERT INTO Pedido VALUES (:1, :2, :3, :4, :5, :6)", (id_pedido, id_usuario, fecha_pedido, metodo_pago, envio, estado))
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
+            cursor.execute("INSERT INTO Pedido VALUES (:1, :2, TO_DATE(:3, 'YYYY-MM-DD'), :4, :5, :6)", (id_pedido, id_usuario, fecha_pedido, metodo_pago, envio, estado))
             connection.commit()
     return redirect(url_for('pedidos'))
 
@@ -700,8 +701,7 @@ def editar_pedido(id_pedido):
         estado = request.form['Estado']
         with get_db_connection() as connection:
             cursor = connection.cursor()
-            cursor.execute("UPDATE Pedido SET ID_Usuario = :1, Fecha_Pedido = :2, Metodo_Pago = :3, Envio = :4, Estado = :5 WHERE ID_Pedido = :6",
-                           (id_usuario, fecha_pedido, metodo_pago, envio, estado, id_pedido))
+            cursor.execute("UPDATE Pedido SET ID_Usuario = :1, Fecha_Pedido = TO_DATE(:2, 'YYYY-MM-DD'), Metodo_Pago = :3, Envio = :4, Estado = :5 WHERE ID_Pedido = :6", (id_usuario, fecha_pedido, metodo_pago, envio, estado, id_pedido))
             connection.commit()
         return redirect(url_for('pedidos'))
 
@@ -714,6 +714,9 @@ def eliminar_pedido(id_pedido):
     return redirect(url_for('pedidos'))
 
 # CRUD operations for Detalles de Pedidos
+
+
+
 @app.route('/detalles_pedidos')
 def detalles_pedidos():
     with get_db_connection() as connection:
@@ -733,8 +736,7 @@ def crear_detalle_pedido():
         subtotal = request.form['Subtotal']
         with get_db_connection() as connection:
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO Detalle_Pedido VALUES (:1, :2, :3, :4, :5, :6)",
-                           (id_detalle, id_pedido, id_producto, cantidad, precio_unidad, subtotal))
+            cursor.execute("INSERT INTO Detalle_Pedido VALUES (:1, :2, :3, :4, :5, :6)", (id_detalle, id_pedido, id_producto, cantidad, precio_unidad, subtotal))
             connection.commit()
     return redirect(url_for('detalles_pedidos'))
 
@@ -755,7 +757,7 @@ def editar_detalle_pedido(id_detalle):
         with get_db_connection() as connection:
             cursor = connection.cursor()
             cursor.execute("UPDATE Detalle_Pedido SET ID_Pedido = :1, ID_Producto = :2, Cantidad = :3, Precio_Unidad = :4, Subtotal = :5 WHERE ID_Detalle = :6",
-                           (id_pedido, id_producto, cantidad, precio_unidad, subtotal, id_detalle))
+                    (id_pedido, id_producto, cantidad, precio_unidad, subtotal, id_detalle))
             connection.commit()
         return redirect(url_for('detalles_pedidos'))
 
